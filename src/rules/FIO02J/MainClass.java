@@ -1,10 +1,10 @@
 /*
- * Package: FIO02J
+ * Package: rules.fio02j
  * File: MainClass.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
-package FIO02J;
+package rules.fio02j;
 
 import java.io.File;
 import java.util.Scanner;

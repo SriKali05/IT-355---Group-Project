@@ -1,10 +1,10 @@
 /*
- * Package: FIO51J
+ * Package: reocommendations.fio51j
  * File: MainClass.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
-package FIO51J;
+package reocommendations.fio51j;
 
 import java.io.FileInputStream;
 import java.util.Scanner;

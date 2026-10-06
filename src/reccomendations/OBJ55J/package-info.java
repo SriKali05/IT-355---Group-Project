@@ -1,1 +1,1 @@
-package OBJ55J;
+package reccomendations.obj55j;

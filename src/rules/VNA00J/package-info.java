@@ -1,1 +1,1 @@
-package VNA00J;
+package rules.vna00j;

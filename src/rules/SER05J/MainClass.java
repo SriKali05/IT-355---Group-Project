@@ -1,10 +1,10 @@
 /*
- * Package: SER05J
+ * Package: rules.ser05j
  * File: MainClass.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
-package SER05J;
+package rules.ser05j;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

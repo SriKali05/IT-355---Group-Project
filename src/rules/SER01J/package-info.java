@@ -1,1 +1,1 @@
-package SER01J;
+package rules.ser01j;

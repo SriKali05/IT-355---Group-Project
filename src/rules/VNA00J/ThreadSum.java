@@ -1,10 +1,10 @@
 /*
- * Package: VNA00J
+ * Package: rules.vna00j
  * File: ThreadSum.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
-package VNA00J;
+package rules.vna00j;
 
 /**
  * Uses Threads to count to a number, with each Thread incrementing the

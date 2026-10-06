@@ -1,10 +1,10 @@
 /*
- * Package: VNA00J
+ * Package: rules.vna00j
  * File: MainClass.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
-package VNA00J;
+package rules.vna00j;
 
 import java.lang.Thread;
 

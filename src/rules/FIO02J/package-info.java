@@ -1,1 +1,1 @@
-package FIO02J;
+package rules.fio02j;

@@ -1,10 +1,10 @@
 /*
- * Package: OBJ13J
+ * Package: rules.obj13j
  * File: SquareValues.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
-package OBJ13J;
+package rules.obj13j;
 
 /**
  * Contains a constant array of the square values for the integers from 0 to 10, inclusive.

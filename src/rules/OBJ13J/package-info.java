@@ -1,1 +1,1 @@
-package OBJ13J;
+package rules.obj13j;

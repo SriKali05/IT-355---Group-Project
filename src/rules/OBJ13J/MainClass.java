@@ -1,10 +1,10 @@
 /*
- * Package: OBJ13J
+ * Package: rules.obj13j
  * File: MainClass.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
-package OBJ13J;
+package rules.obj13j;
 
 /**
  * Main class
