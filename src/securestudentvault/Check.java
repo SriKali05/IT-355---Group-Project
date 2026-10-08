@@ -1,4 +1,4 @@
-package src.securestudentvault;
+package securestudentvault;
 import java.util.regex.Pattern;
 
 // Validation Helpers: (MET00-J)

@@ -1,4 +1,5 @@
-package src.securestudentvault;
+package securestudentvault;
+
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
@@ -26,9 +27,9 @@ class AuthService {
     private static final class Credential {
         private final byte[] salt;
         private final byte[] hash;
-        private final Role role;
+        private final securestudentvault.Role role;
 
-        private Credential(byte[] salt, byte[] hash, Role role) {
+        private Credential(byte[] salt, byte[] hash, securestudentvault.Role role) {
             this.salt = salt;
             this.hash = hash;
             this.role = role;
@@ -64,7 +65,7 @@ class AuthService {
      */
     // MET03-J: methods that perform security checks are FINAL (public API) or PRIVATE (helpers),
     // so a subclass cannot override them and skip the check.
-    public final synchronized void register(String username, char[] password, char[] confirm, Role role)
+    public final synchronized void register(String username, char[] password, char[] confirm, securestudentvault.Role role)
             throws GeneralSecurityException {
         try {
             Check.matches(username, SecureStudentVault.USER_PATTERN, "username");     // MET00-J

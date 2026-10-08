@@ -1,4 +1,4 @@
-package reccomendations.met55j;
+package recommendations.met55j;
 
 import java.util.ArrayList;
 import java.util.List;

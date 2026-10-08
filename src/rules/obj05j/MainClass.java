@@ -11,27 +11,13 @@ package rules.obj05j;
 public class MainClass {
 
     /**
-     * private mutable data owned by the class
-     */
-    private int[] scores = {90, 85, 95};
-
-    /**
-     * returns a copy of the scores array
-     *
-     * @return a copy of the private scores array
-     */
-    public int[] getScores() {
-        return scores.clone();
-    }
-
-    /**
      * demonstrates that changing the returned array does not
      * change the original private array
      *
      * @param args command-line arguments
      */
     public static void main(String[] args) {
-        OBJ05J example = new OBJ05J();
+        Obj05j example = new Obj05j();
 
         int[] returnedScores = example.getScores();
 

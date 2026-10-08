@@ -1,4 +1,4 @@
-package src.securestudentvault;
+package securestudentvault;
 /**
  * Tracks failed login attempts and raises an alarm after a threshold is reached.
  */

@@ -5,7 +5,7 @@
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
-package src.securestudentvault;
+package securestudentvault;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

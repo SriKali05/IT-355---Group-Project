@@ -1,4 +1,4 @@
-package src.securestudentvault;
+package securestudentvault;
 
 /*
  * SecureStudentVault.java  --  IT 355 group project: one program, every rule.
@@ -43,7 +43,9 @@ import java.util.regex.Pattern;
 /* =====================================================================================
  *  MAIN CLASS / DEMO DRIVER
  * ===================================================================================== */
-public final class MainClass {
+/** Runs demonstrations of secure student-record operations and security rules.
+ */
+public final class SecureStudentVault {
 
     // OBJ10-J: the only public static fields are final, and of immutable types.
     public static final String APP_NAME = "Secure Student Vault";
@@ -61,6 +63,9 @@ public final class MainClass {
     private Session teacher;
     private Session student;
 
+    /** Starts the demonstration and exits with its resulting status.
+         * @param args command-line arguments (unused)
+     */
     public static void main(String[] args) {
         int status = new SecureStudentVault().runDemo();
         // FIO14-J: runDemo() has already closed/flushed everything in a finally block,
@@ -68,10 +73,20 @@ public final class MainClass {
         System.exit(status);
     }
 
+    /** Represents an operation expected to be rejected during validation tests.
+     */
     private interface Attempt {
+        /** Executes the attempted operation.
+                 * @throws IOException if an I/O operation fails
+                 * @throws GeneralSecurityException if a security operation fails
+                 * @throws SQLException if a database operation fails
+         */
         void run() throws IOException, GeneralSecurityException, SQLException;
     }
 
+    /** Runs all demonstrations and performs cleanup.
+         * @return process status, zero on success
+     */
     private int runDemo() {
         int status = 0;
         try {
@@ -104,6 +119,9 @@ public final class MainClass {
     }
 
     // ---------------------------------------------------------------- 1. setup
+    /** Creates the working directory and audit log.
+         * @throws IOException if setup fails
+     */
     private void setup() throws IOException {
         banner("1. Setup  (FIO01-J, FIO02-J, ERR02-J)");
         workDir = new File(System.getProperty("java.io.tmpdir"), "vault-" + System.nanoTime());
@@ -115,6 +133,11 @@ public final class MainClass {
     }
 
     // ----------------------------------------------------- 2. authentication
+    /** Demonstrates registration, login, and authentication rejection.
+         * @throws IOException if an I/O operation fails
+         * @throws GeneralSecurityException if a security operation fails
+         * @throws SQLException if a database operation fails
+     */
     private void demoAuthentication() throws IOException, GeneralSecurityException, SQLException {
         banner("2. Authentication  (MET00-J, MET03-J, EXP02-J, FIO13-J, VNA00-J)");
         AuthService auth = new AuthService(audit);
@@ -148,6 +171,11 @@ public final class MainClass {
     }
 
     // ------------------------------------------------------ 3. domain objects
+    /** Demonstrates domain-object validation and defensive copying.
+         * @throws IOException if an I/O operation fails
+         * @throws GeneralSecurityException if a security operation fails
+         * @throws SQLException if a database operation fails
+     */
     private void demoDomainObjects() throws IOException, GeneralSecurityException, SQLException {
         banner("3. Domain objects  (OBJ01/05/08/10/11/13-J, MET00-J, EXP02-J, MET55-J)");
 
@@ -194,6 +222,8 @@ public final class MainClass {
     }
 
     // ------------------------------------------------------------ 4. web form
+    /** Demonstrates validation of submitted grade-form fields.
+     */
     private void demoForms() {
         banner("4. Hidden form fields  (IDS14-J, ERR08-J, MET00-J)");
         Map<String, String> honest = Map.of("studentUid", "1001", "grade", "92");
@@ -216,6 +246,10 @@ public final class MainClass {
     }
 
     // ------------------------------------------------------- 5. serialization
+    /** Demonstrates secure serialization and rejection of forged data.
+         * @throws IOException if serialization or file access fails
+         * @throws ReflectiveOperationException if reflective field access fails
+     */
     private void demoSerialization() throws IOException, ReflectiveOperationException {
         banner("5. Serialization  (SER01-J, SER05-J, SER12-J, FIO01-J)");
         Student snap = registry.snapshot(1001).orElseThrow(() -> new IllegalStateException("student 1001 missing"));
@@ -257,6 +291,11 @@ public final class MainClass {
     }
 
     // ------------------------------------------------------------------ 6. SQL
+    /** Demonstrates parameterized database lookups and input rejection.
+         * @throws SQLException if a database operation fails
+         * @throws IOException if an I/O operation fails
+         * @throws GeneralSecurityException if a security operation fails
+     */
     private void demoSql() throws SQLException, IOException, GeneralSecurityException {
         banner("6. SQL  (IDS00-J, MET00-J)");
         List<String> trace = new ArrayList<>();
@@ -272,6 +311,9 @@ public final class MainClass {
     }
 
     // ------------------------------------------------------ 7. files / reports
+    /** Creates and reads a report using secure file helpers.
+         * @throws IOException if file operations fail
+     */
     private void demoFilesAndReports() throws IOException {
         banner("7. Files and reports  (FIO01/02/08/14-J, MET04-J, EXP00-J)");
         Path report = workDir.toPath().resolve("report.csv");
@@ -287,6 +329,8 @@ public final class MainClass {
     }
 
     // ------------------------------------------------- 8. external command
+    /** Demonstrates validation of arguments passed to an external command.
+     */
     private void demoCommandExecution() {
         banner("8. Runtime.exec()  (IDS07-J)");
         FileInspector inspector = new FileInspector(workDir.toPath());
@@ -309,6 +353,9 @@ public final class MainClass {
     }
 
     // --------------------------------------------------------- 9. concurrency
+    /** Demonstrates thread-safe updates to a shared counter.
+         * @throws InterruptedException if waiting for a thread is interrupted
+     */
     private void demoConcurrency() throws InterruptedException {
         banner("9. Shared primitives across threads  (VNA00-J)");
         AttemptCounter counter = new AttemptCounter();
@@ -328,6 +375,9 @@ public final class MainClass {
     }
 
     // ------------------------------------------------------------ 10. log review
+    /** Flushes and displays the audit log.
+         * @throws IOException if the log cannot be read
+     */
     private void demoAuditLog() throws IOException {
         banner("10. Audit log contents  (FIO13-J, ERR02-J)");
         audit.flush();
@@ -338,6 +388,9 @@ public final class MainClass {
     }
 
     // ---------------------------------------------------------------- cleanup
+    /** Closes the audit log and removes temporary files.
+         * @return zero if cleanup succeeded, otherwise one
+     */
     private int cleanup() {
         int status = 0;
         if (audit != null) {
@@ -362,6 +415,13 @@ public final class MainClass {
     }
 
     // ---------------------------------------------------------------- helpers
+    /** Runs an operation and reports whether invalid input was rejected.
+         * @param label description of the attempted operation
+         * @param attempt operation to execute
+         * @throws IOException if an I/O operation fails
+         * @throws GeneralSecurityException if a security operation fails
+         * @throws SQLException if a database operation fails
+     */
     private static void expectRejected(String label, Attempt attempt)
             throws IOException, GeneralSecurityException, SQLException {
         try {
@@ -372,10 +432,16 @@ public final class MainClass {
         }
     }
 
+    /** Prints a heading for a demonstration section.
+         * @param title heading text
+     */
     private static void banner(String title) {
         out("\n=== " + title + " ===");
     }
 
+    /** Prints a message to standard output.
+         * @param s message to print
+     */
     private static void out(String s) {
         System.out.println(s);
     }

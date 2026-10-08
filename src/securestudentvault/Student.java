@@ -1,4 +1,5 @@
-package src.securestudentvault;
+package securestudentvault;
+
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;

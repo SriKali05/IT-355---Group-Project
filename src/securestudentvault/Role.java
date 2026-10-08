@@ -3,7 +3,7 @@
  * Author: Srida Kalidindi
  * Class: IT 355 Group Project 01
  */
-package src.securestudentvault;
+package securestudentvault;
  
 /**
  * The kinds of users in the system.

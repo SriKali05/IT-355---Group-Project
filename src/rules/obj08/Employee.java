@@ -1,3 +1,5 @@
+package rules.obj08;
+
 /**
  * Demonstrates OBJ08-J by preventing a nested class from
  * exposing a private member of its outer class.
@@ -13,6 +15,13 @@ public class Employee {
      */
     public Employee(double salary) {
         this.salary = salary;
+    }
+    
+    /**
+     * 
+     */
+    public void processSalary() {
+    	this.processSalaryInternally();
     }
 
     /**
@@ -41,17 +50,4 @@ public class Employee {
         );
     }
 
-    /**
-     * Demonstrates internal use of the private nested class.
-     *
-     * @param args command-line arguments
-     */
-    public static void main(String[] args) {
-        Employee employee = new Employee(65000.00);
-
-        employee.processSalaryInternally();
-
-        // Outside classes cannot create Employee.SalaryDetails
-        // because the nested class is private.
-    }
 }
