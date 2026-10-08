@@ -1,1 +1,0 @@
-package rules.obj13j;
