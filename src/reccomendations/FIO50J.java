@@ -1,0 +1,46 @@
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.*;
+
+/**
+ * working example for FIO50-J
+ *
+ * FIO50-J: Do not make assumptions about file creation
+ *
+ * this example uses CREATE_NEW so the file is created only when
+ * it does not already exist
+ */
+public class FIO50J {
+
+    /**
+     * safely creates a new file
+     *
+     * @param filename name of the file to create
+     */
+    public static void createFile(String filename) {
+        Path path = Paths.get(filename);
+
+        try (OutputStream output = Files.newOutputStream(
+                path, StandardOpenOption.CREATE_NEW)) {
+
+            output.write("New file created safely.".getBytes());
+
+            System.out.println("File created.");
+
+        } catch (FileAlreadyExistsException e) {
+            System.out.println("File already exists.");
+
+        } catch (IOException e) {
+            System.out.println("File could not be created.");
+        }
+    }
+
+    /**
+     * demonstrates safe file creation
+     *
+     * @param args command-line arguments
+     */
+    public static void main(String[] args) {
+        createFile("data.txt");
+    }
+}
