@@ -1,8 +1,8 @@
+package securestudentvault;
+
 /* =====================================================================================
  *  LOGGING   (ERR02-J, FIO13-J, FIO01-J, FIO14-J)
  * ===================================================================================== */
-
-package src.securestudentvault;
 
 final class LogSafe {
     private LogSafe() { }

@@ -1,3 +1,3 @@
-package src.securestudentvault;
+package securestudentvault;
 
 enum Role { STUDENT, TEACHER }

@@ -1,4 +1,4 @@
-package src.securestudentvault;
+package securestudentvault;
 
 final class GradeScale {
     // OBJ13-J: mutable arrays are private; only clones leave the class.

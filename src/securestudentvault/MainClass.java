@@ -1,3 +1,5 @@
+package securestudentvault;
+
 /*
  * SecureStudentVault.java  --  IT 355 group project: one program, every rule.
  *
@@ -41,7 +43,7 @@ import java.util.regex.Pattern;
 /* =====================================================================================
  *  MAIN CLASS / DEMO DRIVER
  * ===================================================================================== */
-public final class SecureStudentVault {
+public final class MainClass {
 
     // OBJ10-J: the only public static fields are final, and of immutable types.
     public static final String APP_NAME = "Secure Student Vault";

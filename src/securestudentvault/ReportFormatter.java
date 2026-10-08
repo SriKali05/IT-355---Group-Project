@@ -1,4 +1,5 @@
-package src.securestudentvault;
+package securestudentvault;
+
 import java.util.List;
 /* =====================================================================================
  *  REPORT FORMATTERS   (MET04-J)
