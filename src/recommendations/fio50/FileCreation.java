@@ -17,7 +17,7 @@ import java.util.Scanner;
  * this example uses CREATE_NEW so the file is created only when
  * it does not already exist
  */
-public class MainClass {
+public class FileCreation {
 
     /**
      * demonstrates safe file creation

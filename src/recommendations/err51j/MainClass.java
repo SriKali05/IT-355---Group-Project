@@ -16,7 +16,7 @@ public class MainClass {
 
         try {
             account.withdraw(150.00);
-        } catch (Err51j e) {
+        } catch (BankException e) {
             System.out.println("Withdrawal denied: " + e.getMessage());
         }
     }

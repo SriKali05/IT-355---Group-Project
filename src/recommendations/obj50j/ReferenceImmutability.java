@@ -4,7 +4,7 @@ package recommendations.obj50j;
  * Demonstrates the difference between a final reference
  * and an immutable referenced object.
  */
-public class MainClass {
+public class ReferenceImmutability {
 
     /**
      * Creates and displays an immutable Point.

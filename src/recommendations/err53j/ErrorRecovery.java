@@ -6,7 +6,7 @@ package recommendations.err53j;
  * The noncompliant example does not handle the error, so the cleanup code 
  * is never reached. The compliant example uses finally so the cleanup 
  * code still runs when an error occurs. */
-public class MainClass {
+public class ErrorRecovery {
 
     /** 
     * Runs the noncompliant and compliant examples. 
@@ -21,7 +21,7 @@ public class MainClass {
         System.out.println("Noncompliant:");
         
         // Runs the example in a separate thread so the program can continue.
-        Thread worker = new Thread(MainClass::processNoncompliant);
+        Thread worker = new Thread(ErrorRecovery::processNoncompliant);
         worker.start();
         worker.join();
 

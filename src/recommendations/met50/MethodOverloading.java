@@ -8,7 +8,7 @@ package recommendations.met50;
  * this example uses different method names for different types
  * of searches instead of using confusing overloaded methods
  */
-public class MainClass {
+public class MethodOverloading {
 
     /**
      * demonstrates using clear method names instead of

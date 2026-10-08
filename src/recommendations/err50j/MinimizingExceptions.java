@@ -8,7 +8,7 @@ package recommendations.err50j;
  * a string is a number. The compliant example checks the characters
  * directly without using an exception.
  */
-public class MainClass {
+public class MinimizingExceptions {
 
     /**
     * Runs the noncompliant and compliant examples. 

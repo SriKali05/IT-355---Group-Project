@@ -15,7 +15,7 @@ import java.util.Arrays;
  * Example of MET56-J: do not use Object.equals() to compare
  * cryptographic keys.
  */
-public class MainClass {
+public class ObjectComparison {
 	
     /**
      * Runs the demonstration.

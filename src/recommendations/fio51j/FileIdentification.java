@@ -1,6 +1,6 @@
 /*
  * Package: recommendations.fio51j
- * File: MainClass.java
+ * File: FileIdentification.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
@@ -12,7 +12,7 @@ import java.util.Scanner;
 /**
  * Main class
  */
-public class MainClass {
+public class FileIdentification {
 	/**
 	 * Main method
 	 * 

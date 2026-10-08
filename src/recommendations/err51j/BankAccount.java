@@ -23,9 +23,9 @@ public class BankAccount {
      * @param amount amount of money to withdraw
      * @throws Err51j if the withdrawal exceeds the balance
      */
-    public void withdraw(double amount) throws Err51j {
+    public void withdraw(double amount) throws BankException {
         if (amount > balance) {
-            throw new Err51j(
+            throw new BankException(
                 "The account does not have enough funds."
             );
         }

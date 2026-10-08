@@ -1,5 +1,5 @@
 /*
- * File: MainClass.java
+ * File: SensitiveInfo.java
  * Srida Kalidindi
  * Class: IT 355 Group Project 01
  */
@@ -17,7 +17,7 @@ import java.util.Map;
  * Example of FIO52-J: do not store unencrypted sensitive information
  * on the client side.
  */
-public class MainClass {
+public class SensitiveInfo {
     
     /**
      * Runs the demonstration.

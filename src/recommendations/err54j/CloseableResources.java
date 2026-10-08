@@ -11,7 +11,7 @@ import java.nio.file.Path;
  * Demonstrates ERR54-J by safely managing a reader and writer
  * with a try-with-resources statement.
  */
-public class MainClass {
+public class CloseableResources {
     
     /**
      * Runs the resource-management example.
