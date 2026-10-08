@@ -1,4 +1,4 @@
-package securestudentvault;
+package src.securestudentvault;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

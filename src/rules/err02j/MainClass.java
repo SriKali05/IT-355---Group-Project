@@ -1,3 +1,8 @@
+/**
+ * File: MainClass.java
+ * Srida Kalidindi
+ * Class: IT 355 Group Project 01
+ */
 package rules.err02j;
 
 //working example code explaining rule ERR02-J
@@ -6,11 +11,18 @@ package rules.err02j;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Example of ERR02-J: prevent exceptions while logging data.
+ */
 public class MainClass {
-    private static final Logger logger =
-            Logger.getLogger(ERR02J.class.getName());
 
-    //NONCOMPLIANT: writes the exception to System.err
+    /** Logger used by the compliant example. */
+    private static final Logger logger =
+            Logger.getLogger(MainClass.class.getName());
+
+    /**
+     * NONCOMPLIANT: writes the exception to System.err.
+     */
     static void noncompliant() {
         try {
             System.out.println("[Noncompliant] Attempting security-sensitive action...");
@@ -21,7 +33,9 @@ public class MainClass {
         }
     }
 
-    //COMPLIANT: uses java.util.logging.Logger
+    /**
+     * COMPLIANT: uses java.util.logging.Logger to record the exception.
+     */
     static void compliant() {
         try {
             System.out.println("[Compliant] Attempting security-sensitive action...");
@@ -32,6 +46,11 @@ public class MainClass {
         }
     }
 
+    /**
+     * Runs the demonstration.
+     *
+     * @param args not used
+     */
     public static void main(String[] args) {
         noncompliant();
         System.out.println();

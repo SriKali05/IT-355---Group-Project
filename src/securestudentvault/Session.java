@@ -4,6 +4,9 @@
  * and every method checks it first.
  * MET03-J: security-check methods are final.
  */
+
+package src.securestudentvault;
+
 class Session {
     private final String username;
     private final Role role;
