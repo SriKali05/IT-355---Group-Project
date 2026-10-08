@@ -1,4 +1,4 @@
-package src.rules;
+package rules.err02j;
 
 //working example code explaining rule ERR02-J
 //ERR02-J: prevent exceptions while logging data
@@ -6,7 +6,7 @@ package src.rules;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ERR02J {
+public class MainClass {
     private static final Logger logger =
             Logger.getLogger(ERR02J.class.getName());
 

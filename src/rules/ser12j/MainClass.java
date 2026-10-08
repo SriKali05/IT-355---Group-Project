@@ -1,11 +1,11 @@
-package src.rules;
+package rules.ser12j;
 
 //working example code explaining rule SER12-J
 //SER12-J: prevent deserialization of untrusted data
 
 import java.io.*;
 
-public class SER12J {
+public class MainClass {
 
     //Simulates a dangerous class, runs code when it is deserialized
     static class Evil implements Serializable {

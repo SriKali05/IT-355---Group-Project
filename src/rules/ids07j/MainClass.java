@@ -1,4 +1,4 @@
-package src.rules;
+package rules.ids07j;
 
 //working example code explaining rule IDS07-J
 //IDS07-J: sanitize untrusted data passed to the Runtime.exec() method
@@ -6,7 +6,7 @@ package src.rules;
 import java.io.File;
 import java.util.regex.Pattern;
 
-public class IDS07J {
+public class MainClass {
 
     //this is a working example for windows.
 

@@ -1,4 +1,4 @@
-package src.rules.OBJ11J.compliant;
+package rules.obj11j.compliant;
 
 /**
  * Alternative compliant example for rule OBJ11-J: declare the class final.

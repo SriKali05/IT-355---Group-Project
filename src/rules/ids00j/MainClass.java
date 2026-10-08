@@ -1,4 +1,4 @@
-package src.rules;
+package rules.ids00j;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,7 +22,7 @@ import java.sql.Statement;
  * 
  * 
  */
-public class IDS00J {
+public class MainClass {
     /** Maximum allowed length for username and password; matches the VARCHAR(50) columns. */
     private static final int MAX_INPUT_LENGTH = 50;
     /**

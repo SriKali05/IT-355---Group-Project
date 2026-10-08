@@ -1,10 +1,10 @@
 /*
- * Package: reocommendations.met54j
+ * Package: recommendations.met54j
  * File: MainClass.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
-package reocommendations.met54j;
+package recommendations.met54j;
 
 /**
  * Main class

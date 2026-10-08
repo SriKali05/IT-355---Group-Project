@@ -1,10 +1,10 @@
 /*
- * Package: reccomendations.obj55j
+ * Package: recommendations.obj55j
  * File: MainClass.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
-package reccomendations.obj55j;
+package recommendations.obj55j;
 
 /**
  * Main class

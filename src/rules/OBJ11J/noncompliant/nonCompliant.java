@@ -1,4 +1,4 @@
-package src.rules.OBJ11J.noncompliant;
+package rules.obj11j.noncompliant;
 
 /**
  * Noncompliant example code explaining rule OBJ11-J (be wary of letting constructors throw exceptions)

@@ -1,11 +1,11 @@
-package src.rules;
+package rules.exp02j;
 
 //working example code explaining rule EXP02-J
 //EXP02-J: do not use the Object.equals() method to compare two arrays
 
 import java.util.Arrays;
 
-public class EXP02J {
+public class MainClass {
 
     //NONCOMPLIANT: Object.equals() compares references, not contents
     static void noncompliant() {

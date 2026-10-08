@@ -1,4 +1,4 @@
-package src.rules;
+package rules.fio14j;
 
 //working example code explaining rule FIO14-J
 //FIO14-J: perform proper cleanup at program termination
@@ -7,7 +7,7 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-public class FIO14J {
+public class MainClass {
 
     public static void main(String[] args) throws Exception {
         PrintStream out = new PrintStream(

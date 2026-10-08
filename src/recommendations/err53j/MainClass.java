@@ -1,4 +1,4 @@
-package src.reccomendations;
+package reccomendations.err53j;
 
 /** 
  * Demonstrates CERT rule ERR53-J. 
@@ -6,7 +6,7 @@ package src.reccomendations;
  * The noncompliant example does not handle the error, so the cleanup code 
  * is never reached. The compliant example uses finally so the cleanup 
  * code still runs when an error occurs. */
-public class ERR53J {
+public class MainClass {
 
     /**
     * Tries to create an extremely large array.

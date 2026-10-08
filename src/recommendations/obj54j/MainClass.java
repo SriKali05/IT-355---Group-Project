@@ -1,9 +1,9 @@
-package src.reccomendations;
+package reccomendations.obj54j;
 
 //working example code explaining recommendation OBJ54-J
 //OBJ54-J: do not attempt to help the garbage collector by setting local reference variables to null
 
-public class OBJ54J {
+public class MainClass {
 
     public static void main(String[] args) {
 

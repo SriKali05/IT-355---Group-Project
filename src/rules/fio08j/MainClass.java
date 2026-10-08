@@ -1,4 +1,4 @@
-package src.rules;
+package rules.fio08j;
 
 import java.io.ByteArrayInputStream;
 import java.io.CharArrayReader;
@@ -18,7 +18,7 @@ import java.io.Reader;
  * 
  * The compliant methods check for -1 first and then convert the value. 
  */
-public class FIO08J {
+public class MainClass {
 
     /** 
      * NONCOMPLIANT: Reads bytes from an input stream. 

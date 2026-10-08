@@ -1,4 +1,4 @@
-package src.rules;
+package rules.exp00j;
 
 import java.math.BigDecimal;
 
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  * balance does not change. 
  * 
  * The compliant example saves the returned value, so the balance is updated. */
-public class EXP00J {
+public class MainClass {
     /**
      * Runs the noncompliant and compliant examples. 
      * 

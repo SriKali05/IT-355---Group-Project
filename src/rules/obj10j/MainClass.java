@@ -1,4 +1,4 @@
-package src.rules;
+package rules.obj10j;
 
 /** 
  * Demonstrates CERT rule OBJ10-J ( Do not use public static nonfinal fields). 
@@ -11,7 +11,7 @@ package src.rules;
  * The compliant example keeps the value private and final and provides a 
  * getter to safely read the value. 
  */
-public class OBJ10J {
+public class MainClass {
 
     /** 
      * NONCOMPLIANT: The setting is public and can be changed by any code. 

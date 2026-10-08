@@ -1,4 +1,4 @@
-package src.reccomendations;
+package reccomendations.met55j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 * The noncompliant example returns null when no songs are found. 
 * The compliant example always returns a list, even when it is empty. 
 */
-public class MET55J {
+public class MainClass {
 
     /**
     * NONCOMPLIANT: Returns null when no songs match the artist. 

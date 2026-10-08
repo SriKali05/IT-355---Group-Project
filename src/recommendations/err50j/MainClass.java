@@ -1,4 +1,4 @@
-package src.reccomendations;
+package recommendations.err50j;
 
 /**
  * Demonstrates CERT rule ERR50-J.
@@ -8,7 +8,7 @@ package src.reccomendations;
  * a string is a number. The compliant example checks the characters
  * directly without using an exception.
  */
-public class ERR50J {
+public class MainClass {
 
     /** 
     * NONCOMPLIANT: Uses an exception to check whether a string contains

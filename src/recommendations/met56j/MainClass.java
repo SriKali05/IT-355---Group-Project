@@ -1,4 +1,4 @@
-package src.reccomendations;
+package reccomendations.met56j;
 
 //working example code explaining recommendation MET56-J
 //MET56-J: do not use Object.equals() to compare cryptographic keys
@@ -6,7 +6,7 @@ package src.reccomendations;
 import java.security.Key;
 import java.util.Arrays;
 
-public class MET56J {
+public class MainClass {
 
     // A simple key class that does NOT override equals(), like many real Key classes
     static class SimpleKey implements Key {

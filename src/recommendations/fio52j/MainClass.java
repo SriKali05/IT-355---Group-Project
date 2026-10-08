@@ -1,4 +1,4 @@
-package src.reccomendations;
+package reccomendations.fio52j;
 
 //working example code explaining recommendation FIO52-J
 //FIO52-J: do not store unencrypted sensitive information on the client side
@@ -8,7 +8,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FIO52J {
+public class MainClass {
 
     // Simulates the SERVER's memory. This is never sent to the client.
     static final Map<String, String> serverTokens = new HashMap<>();
