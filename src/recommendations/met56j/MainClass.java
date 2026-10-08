@@ -3,7 +3,7 @@
  * Srida Kalidindi
  * Class: IT 355 Group Project 01
  */
-package src.recommendations.met56j;
+package recommendations.met56j;
 
 //working example code explaining recommendation MET56-J
 //MET56-J: do not use Object.equals() to compare cryptographic keys

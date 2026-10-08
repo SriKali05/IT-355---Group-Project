@@ -3,7 +3,7 @@
  * Srida Kalidindi
  * Class: IT 355 Group Project 01
  */
-package src.securestudentvault;
+package securestudentvault;
  
 import java.util.List;
 /* =====================================================================================

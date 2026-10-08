@@ -1,4 +1,4 @@
-package src.securestudentvault;
+package securestudentvault;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.logging.FileHandler;

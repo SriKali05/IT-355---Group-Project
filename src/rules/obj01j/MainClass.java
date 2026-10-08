@@ -1,4 +1,4 @@
-package obj01j;
+package rules.obj01j;
 
 /**
  * working example for OBJ01-J

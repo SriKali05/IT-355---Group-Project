@@ -3,7 +3,7 @@
  * Srida Kalidindi
  * Class: IT 355 Group Project 01
  */
-package src.recommendations.fio52j;
+package recommendations.fio52j;
  
 //working example code explaining recommendation FIO52-J
 //FIO52-J: do not store unencrypted sensitive information on the client side

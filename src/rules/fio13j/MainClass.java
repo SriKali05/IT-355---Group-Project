@@ -1,4 +1,4 @@
-package fio13j;
+package rules.fio13j;
 
 import java.util.logging.Logger;
 

@@ -1,4 +1,4 @@
-package reccomendations.err53j;
+package recommendations.err53j;
 
 /** 
  * Demonstrates CERT rule ERR53-J. 
@@ -6,7 +6,7 @@ package reccomendations.err53j;
  * The noncompliant example does not handle the error, so the cleanup code 
  * is never reached. The compliant example uses finally so the cleanup 
  * code still runs when an error occurs. */
-public class MainClass {
+public class Err53j {
 
     /**
     * Tries to create an extremely large array.
@@ -57,7 +57,7 @@ public class MainClass {
         System.out.println("Noncompliant:");
         
         // Runs the example in a separate thread so the program can continue.
-        Thread worker = new Thread(ERR53J::processNoncompliant);
+        Thread worker = new Thread(Err53j::processNoncompliant);
         worker.start();
         worker.join();
 

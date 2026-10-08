@@ -5,7 +5,7 @@
  * MET03-J: security-check methods are final.
  */
 
-package src.securestudentvault;
+package securestudentvault;
 
 class Session {
     private final String username;

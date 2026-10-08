@@ -3,7 +3,7 @@
  * Srida Kalidindi
  * Class: IT 355 Group Project 01
  */
-package src.securestudentvault;
+package securestudentvault;
  
 /* =====================================================================================
  *  LOGGING   (ERR02-J, FIO13-J, FIO01-J, FIO14-J)

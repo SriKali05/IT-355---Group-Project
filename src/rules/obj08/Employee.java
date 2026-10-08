@@ -1,3 +1,5 @@
+package rules.obj08;
+
 /**
  * Demonstrates OBJ08-J by preventing a nested class from
  * exposing a private member of its outer class.

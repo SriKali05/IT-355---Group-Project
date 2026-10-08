@@ -5,7 +5,7 @@
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
-package src.securestudentvault;
+package securestudentvault;
 
 /**
  * Provides one static method for submitting a grade form

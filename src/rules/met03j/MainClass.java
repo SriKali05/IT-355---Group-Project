@@ -1,4 +1,4 @@
-package met01j;
+package rules.met03j;
 
 /**
  * Demonstrates MET03-J by preventing a security-sensitive

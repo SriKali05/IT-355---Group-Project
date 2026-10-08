@@ -3,7 +3,7 @@
  * Srida Kalidindi
  * Class: IT 355 Group Project 01
  */
-package src.recommendations.obj54j;
+package recommendations.obj54j;
  
 //working example code explaining recommendation OBJ54-J
 //OBJ54-J: do not attempt to help the garbage collector by setting local reference variables to null

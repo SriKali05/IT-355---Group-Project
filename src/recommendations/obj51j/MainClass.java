@@ -1,4 +1,4 @@
-package recommendations.obj51;
+package recommendations.obj51j;
 
 /**
  * working example for OBJ51-J
