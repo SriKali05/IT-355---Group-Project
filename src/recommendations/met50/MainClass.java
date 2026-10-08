@@ -1,3 +1,5 @@
+package recommendations.met50;
+
 /**
  * working example for MET50-J
  *
@@ -6,7 +8,7 @@
  * this example uses different method names for different types
  * of searches instead of using confusing overloaded methods
  */
-public class MET50J {
+public class MainClass {
 
     /**
      * finds a student using a student ID

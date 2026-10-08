@@ -1,3 +1,5 @@
+package recommendations.fio50;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.*;
@@ -10,7 +12,7 @@ import java.nio.file.*;
  * this example uses CREATE_NEW so the file is created only when
  * it does not already exist
  */
-public class FIO50J {
+public class MainClass {
 
     /**
      * safely creates a new file
