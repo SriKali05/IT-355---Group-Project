@@ -1,3 +1,5 @@
+package rules.err08j;
+
 /**
  * working example for ERR08-J
  *
@@ -6,7 +8,7 @@
  * this example checks for a null value before using the object
  * instead of catching a NullPointerException
  */
-public class ERR08J {
+public class MainClas {
 
     /**
      * processes a name after checking whether it is null

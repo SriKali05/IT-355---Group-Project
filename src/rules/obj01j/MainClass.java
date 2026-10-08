@@ -1,3 +1,5 @@
+package rules.obj01j;
+
 /**
  * working example for OBJ01-J
  *
@@ -7,7 +9,7 @@
  * outside code cannot directly change it. Public methods are
  * provided to safely access and update the balance
  */
-public class OBJ01J {
+public class MainClass {
 
     /**
      * stores the account balance

@@ -1,3 +1,5 @@
+package rules.obj05j;
+
 /**
  * working example for OBJ05-J
  *
@@ -6,7 +8,7 @@
  * this example returns a copy of a private array so that outside
  * code cannot directly modify the class's internal data
  */
-public class OBJ05J {
+public class MainClass {
 
     /**
      * private mutable data owned by the class

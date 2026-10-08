@@ -1,3 +1,5 @@
+package rules.met04j;
+
 /**
  * working example for MET04-J
  *
@@ -7,7 +9,7 @@
  * this example keeps the overridden method protected,
  * matching the accessibility of the parent method
  */
-public class MET04J {
+public class MainClass {
 
     /**
      * parent class with a protected method

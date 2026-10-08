@@ -1,3 +1,5 @@
+package rules.ids14j;
+
 /**
  * working example for IDS14-J
  *
@@ -6,7 +8,7 @@
  * This example validates a value received from a hidden form field
  * before using it
  */
-public class IDS14J {
+public class MainClass {
 
     /**
      * processes a hidden form field after validating its value

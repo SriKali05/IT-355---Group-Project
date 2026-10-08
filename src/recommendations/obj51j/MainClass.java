@@ -1,3 +1,5 @@
+package recommendations.obj51j;
+
 /**
  * working example for OBJ51-J
  *
@@ -6,7 +8,7 @@
  * this example keeps an internal class and its data restricted
  * because they do not need to be publicly accessible
  */
-public class OBJ51J {
+public class MainClass {
 
     /**
      * internal class that does not need to be public
