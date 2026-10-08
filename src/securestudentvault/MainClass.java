@@ -1,4 +1,4 @@
-package securestudentvault;
+package src.securestudentvault;
 
 /*
  * SecureStudentVault.java  --  IT 355 group project: one program, every rule.

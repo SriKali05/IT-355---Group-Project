@@ -5,7 +5,7 @@
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
-package securestudentvault;
+package src.securestudentvault;
 
 import java.util.Locale;
 
