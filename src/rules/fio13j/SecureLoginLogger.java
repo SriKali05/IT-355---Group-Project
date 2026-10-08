@@ -7,9 +7,8 @@ import java.util.logging.Logger;
  * without placing a user's password in the log.
  */
 public class SecureLoginLogger {
-
     private static final Logger LOGGER =
-        Logger.getLogger(SecureLoginLogger.class.getName());
+            Logger.getLogger(SecureLoginLogger.class.getName());
 
     /**
      * Attempts to authenticate a user without logging the password.
@@ -18,7 +17,7 @@ public class SecureLoginLogger {
      * @param password the sensitive password supplied by the user
      * @return true if the demonstration credentials are correct
      */
-    public static boolean authenticate(String username, String password) {
+    static boolean authenticate(String username, String password) {
         boolean authenticated =
             "student".equals(username)
             && "SecurePass123".equals(password);
@@ -35,5 +34,4 @@ public class SecureLoginLogger {
          */
         return authenticated;
     }
-
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * File: MainClass.java
  * Srida Kalidindi
  * Class: IT 355 Group Project 01
@@ -16,6 +16,20 @@ import java.util.Arrays;
  * cryptographic keys.
  */
 public class MainClass {
+	
+    /**
+     * Runs the demonstration.
+     *
+     * @param args not used
+     */
+    public static void main(String[] args) {
+        // Two separate key objects holding the SAME key value
+        Key key1 = new SimpleKey(new byte[] {1, 2, 3, 4});
+        Key key2 = new SimpleKey(new byte[] {1, 2, 3, 4});
+
+        System.out.println("Noncompliant (equals only):   " + keysEqualBad(key1, key2));
+        System.out.println("Compliant (compare contents): " + keysEqualGood(key1, key2));
+    }
 
     /** A simple key class that does NOT override equals(), like many real Key classes. */
     static class SimpleKey implements Key {
@@ -61,19 +75,5 @@ public class MainClass {
             return true;
         }
         return Arrays.equals(key1.getEncoded(), key2.getEncoded());
-    }
-
-    /**
-     * Runs the demonstration.
-     *
-     * @param args not used
-     */
-    public static void main(String[] args) {
-        // Two separate key objects holding the SAME key value
-        Key key1 = new SimpleKey(new byte[] {1, 2, 3, 4});
-        Key key2 = new SimpleKey(new byte[] {1, 2, 3, 4});
-
-        System.out.println("Noncompliant (equals only):   " + keysEqualBad(key1, key2));
-        System.out.println("Compliant (compare contents): " + keysEqualGood(key1, key2));
     }
 }

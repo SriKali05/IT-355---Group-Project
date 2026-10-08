@@ -2,7 +2,12 @@ package recommendations.fio50;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.*;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Scanner;
 
 /**
  * working example for FIO50-J
@@ -14,6 +19,20 @@ import java.nio.file.*;
  */
 public class MainClass {
 
+    /**
+     * demonstrates safe file creation
+     *
+     * @param args command-line arguments
+     */
+    public static void main(String[] args) {
+    	Scanner s = new Scanner(System.in);
+    	System.out.print("Enter filename to create: ");
+    	String filename = s.next();
+    	s.close();
+    	
+        createFile(filename);
+    }
+    
     /**
      * safely creates a new file
      *
@@ -27,7 +46,7 @@ public class MainClass {
 
             output.write("New file created safely.".getBytes());
 
-            System.out.println("File created.");
+            System.out.println("File " + filename + " created safely.");
 
         } catch (FileAlreadyExistsException e) {
             System.out.println("File already exists.");
@@ -35,14 +54,5 @@ public class MainClass {
         } catch (IOException e) {
             System.out.println("File could not be created.");
         }
-    }
-
-    /**
-     * demonstrates safe file creation
-     *
-     * @param args command-line arguments
-     */
-    public static void main(String[] args) {
-        createFile("data.txt");
     }
 }
