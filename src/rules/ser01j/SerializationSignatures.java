@@ -1,6 +1,6 @@
 /*
  * Package: rules.ser01j
- * File: MainClass.java
+ * File: SerializationSignatures.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
@@ -14,7 +14,7 @@ import java.io.ObjectOutputStream;
 /**
  * Main class
  */
-public class MainClass {
+public class SerializationSignatures {
 	/**
 	 * Main method
 	 * 

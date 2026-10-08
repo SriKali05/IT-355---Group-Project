@@ -10,7 +10,7 @@ package rules.vna00j;
  * Uses Threads to count to a number, with each Thread incrementing the
  * instance variable 'num' by 1
  */
-public class ThreadSum implements Runnable{
+public class ThreadIncrement implements Runnable{
 	private int num = 0;
 	
 	/**

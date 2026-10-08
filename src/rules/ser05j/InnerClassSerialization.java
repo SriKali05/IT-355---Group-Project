@@ -1,6 +1,6 @@
 /*
  * Package: rules.ser05j
- * File: MainClass.java
+ * File: InnerClassSerialization.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
@@ -14,7 +14,7 @@ import java.io.ObjectOutputStream;
 /**
  * Main class
  */
-public class MainClass {
+public class InnerClassSerialization {
 	/**
 	 * Main method
 	 * 

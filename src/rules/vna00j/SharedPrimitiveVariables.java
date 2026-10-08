@@ -1,6 +1,6 @@
 /*
  * Package: rules.vna00j
- * File: MainClass.java
+ * File: SharedPrimitiveVariables.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
@@ -11,7 +11,7 @@ import java.lang.Thread;
 /**
  * Main class
  */
-public class MainClass {
+public class SharedPrimitiveVariables {
 	/**
 	 * Main method
 	 * 
@@ -24,7 +24,7 @@ public class MainClass {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ThreadSum ts = new ThreadSum();
+		ThreadIncrement ts = new ThreadIncrement();
 		
 		Thread[] threads = new Thread[100000];
 		for(int i = 0; i < threads.length; i++) {
