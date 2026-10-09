@@ -17,8 +17,8 @@ import java.sql.Statement;
  * The main method tests both login methods using the same malicious input to show the difference between the unsafe and safe approaches.
  * 
  * To run this program input the following command in the terminal:
- * 1) javac -cp h2.jar -d /tmp/out src/rules/IDS00J.java
- * 2) java -cp /tmp/out:h2.jar src.rules.IDS00J
+ * 1) javac -cp h2.jar -d /tmp/out src/rules/ids00j/SqlInjection.java
+ * 2) java -cp /tmp/out:h2.jar rules.ids00j.SqlInjection
  * 
  * 
  */
