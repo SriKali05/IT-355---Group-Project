@@ -18,7 +18,7 @@ public class ArraySearch {
 	 * and prints the first index of each int. If findFirstInstance returns -1, it uses this
 	 * information to state that the int could not be found.
 	 * 
-	 * @param args
+	 * @param args command-line arguments (not used)
 	 */
 	public static void main(String[] args) {
 		int[] numbers = {3, 4, 19, -4, 0, 290, 12, -4, 1, 99};

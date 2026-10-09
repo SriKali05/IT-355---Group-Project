@@ -36,7 +36,7 @@ public class ProgramCleanup {
         System.out.println("Closed the file, then exiting...");
         Runtime.getRuntime().exit(1);
 
-        //NONCOMPLIANT: to see the problem, delete the three lines above
+        //NONCOMPLIANT: to see the problem, comment out the three lines above
         //this version does not flush the buffer like the one above
         System.out.println("Exiting WITHOUT closing the file...");
         Runtime.getRuntime().exit(1);

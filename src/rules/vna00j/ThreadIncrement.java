@@ -1,6 +1,6 @@
 /*
  * Package: rules.vna00j
- * File: ThreadSum.java
+ * File: ThreadIncrement.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
@@ -18,7 +18,7 @@ public class ThreadIncrement implements Runnable{
 	 * 
 	 * @return the object instance's num value
 	 */
-	public int getNum() {
+	public synchronized int getNum() {
 		return this.num;
 	}
 

@@ -1,4 +1,4 @@
-package recommendations.fio50;
+package recommendations.fio50j;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import javax.management.relation.Role;
 
 /* AUTHENTICATION: AuthService, Session, AttemptCounter */
 /**
@@ -21,15 +20,27 @@ class AuthService {
     private static final SecureRandom RANDOM = new SecureRandom();
 
     /**
-    * Stores a user's password information and assigned role
-    */
-    /** OBJ08-J: private static nested class; nothing about the outer class leaks through it. */
+     * Stores a user's password salt, password hash and assigned role.
+     *
+     * OBJ01-J: the class is private and its fields are private, so password
+     * material can only be read by AuthService. It is a static nested class:
+     * it never touches AuthService's private members, so there is no outer
+     * data for it to expose (compare StudentRegistry.SummaryView, which is
+     * the vault's OBJ08-J example).
+     */
     private static final class Credential {
         private final byte[] salt;
         private final byte[] hash;
-        private final securestudentvault.Role role;
+        private final Role role;
 
-        private Credential(byte[] salt, byte[] hash, securestudentvault.Role role) {
+        /**
+         * Creates a stored credential.
+         *
+         * @param salt the random salt used when hashing the password
+         * @param hash the PBKDF2 hash of the password
+         * @param role the user's assigned role
+         */
+        private Credential(byte[] salt, byte[] hash, Role role) {
             this.salt = salt;
             this.hash = hash;
             this.role = role;
@@ -65,7 +76,7 @@ class AuthService {
      */
     // MET03-J: methods that perform security checks are FINAL (public API) or PRIVATE (helpers),
     // so a subclass cannot override them and skip the check.
-    public final synchronized void register(String username, char[] password, char[] confirm, securestudentvault.Role role)
+    public final synchronized void register(String username, char[] password, char[] confirm, Role role)
             throws GeneralSecurityException {
         try {
             Check.matches(username, SecureStudentVault.USER_PATTERN, "username");     // MET00-J

@@ -21,7 +21,7 @@ public class LongLivedContainers {
 	 * If the array was a long-lived object, then this would be beneficial
 	 * to ensure that it doesn't take up unnecessary memory with its objects.
 	 * 
-	 * @param args
+	 * @param args command-line arguments (not used)
 	 */
 	public static void main(String[] args) {
 		String[] s = new String[10];

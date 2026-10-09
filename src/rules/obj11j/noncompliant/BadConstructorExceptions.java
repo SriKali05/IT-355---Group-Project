@@ -7,7 +7,7 @@ package rules.obj11j.noncompliant;
 class BadConstructorExceptions {
     /**
      * Start of program
-     * @param args
+     * @param args command-line arguments (not used)
      */
     public static void main(String[] args) {
         Attacker stolen = Attacker.getStolenInstance();

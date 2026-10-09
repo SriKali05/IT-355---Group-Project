@@ -1,5 +1,5 @@
 /*
- * File: MainClass.java
+ * File: ObjectComparison.java
  * Srida Kalidindi
  * Class: IT 355 Group Project 01
  */
@@ -29,27 +29,6 @@ public class ObjectComparison {
 
         System.out.println("Noncompliant (equals only):   " + keysEqualBad(key1, key2));
         System.out.println("Compliant (compare contents): " + keysEqualGood(key1, key2));
-    }
-
-    /** A simple key class that does NOT override equals(), like many real Key classes. */
-    static class SimpleKey implements Key {
-        private final byte[] bytes;
-
-        /**
-         * Creates a key from the given bytes.
-         *
-         * @param bytes the key value
-         */
-        SimpleKey(byte[] bytes) { this.bytes = bytes; }
-
-        /** @return the algorithm name */
-        public String getAlgorithm() { return "Simple"; }
-
-        /** @return the key format */
-        public String getFormat()    { return "RAW"; }
-
-        /** @return a copy of the key bytes */
-        public byte[] getEncoded()   { return bytes.clone(); }
     }
 
     /**

@@ -16,12 +16,12 @@ public class SharedPrimitiveVariables {
 	 * Main method
 	 * 
 	 * Creates 100,000 Thread objects, uses the runnable method of
-	 * Thread:Sum with them, and waits for them all to finish. It
-	 * then calls getNum() on the ThreadSum object, which always
-	 * returns exactly 100,000, because ThreadSum correctly ensures
+	 * ThreadIncrement with them, and waits for them all to finish. It
+	 * then calls getNum() on the ThreadIncrement object, which always
+	 * returns exactly 100,000, because ThreadIncrement correctly ensures
 	 * that individual Threads never read old values.
 	 * 
-	 * @param args
+	 * @param args command-line arguments (not used)
 	 */
 	public static void main(String[] args) {
 		ThreadIncrement ts = new ThreadIncrement();

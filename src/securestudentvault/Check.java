@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
  * Provides helper methods for validating input values.
  */
 final class Check {
+    /** Prevents instantiation of this utility class. */
     private Check() { }
 
     /**
@@ -27,13 +28,15 @@ final class Check {
     /**
      * Checks that a string is not null and matches a pattern.
      *
+     * ERR08-J: the null check is explicit, so nobody ever needs to catch
+     * NullPointerException.
+     *
      * @param value the string to check
      * @param pattern the required pattern
      * @param label the name of the value
      * @return the validated string
      * @throws IllegalArgumentException if the string is null or has an invalid format
      */
-    /** Null check is explicit, so nobody ever needs to catch NullPointerException (ERR08-J). */
     static String matches(String value, Pattern pattern, String label) {
         if (value == null) {
             throw new IllegalArgumentException(label + " must not be null");

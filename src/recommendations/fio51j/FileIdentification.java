@@ -6,52 +6,58 @@
  */
 package recommendations.fio51j;
 
-import java.io.FileInputStream;
-import java.util.Scanner;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Objects;
 
 /**
  * Main class
  */
 public class FileIdentification {
-	/**
-	 * Main method
-	 * 
-	 * Takes a file path from the user and reads the size of the file
-	 * using FileInputStream. It then reads the same file path into
-	 * another FileInputStream, and compares the file size to the size
-	 * that was calculated during the first read. This helps to ensure
-	 * that the file has not been modified since it was last read, and
-	 * is actually the same file. The point of this recommendation is that you
-	 * aren't relying solely on the file path alone to verify if a file
-	 * is the same.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		System.out.print("Enter the path of an existing file to read: ");
-		Scanner s = new Scanner(System.in);
-		String filePath = s.next();
-		s.close();
-		
-		try {
-			FileInputStream fin = new FileInputStream(filePath);
-			long origFileSize = fin.getChannel().size();
-			fin.close();
-			
-			fin = new FileInputStream(filePath);
-			long newFileSize = fin.getChannel().size();
-			fin.close();
-			
-			if(origFileSize == newFileSize)
-				System.out.println("Original file size of " + origFileSize +
-						" bytes matches the current file size of " + newFileSize + " bytes.");
-			else
-				System.out.println("Original file size of " + origFileSize +
-						" bytes does not match current file size of " + newFileSize +
-						" bytes, indicating that it has been modified.");
-		}
-		catch(Exception e) {
-			System.out.println("Error occurred during file processing.");
-		}
-	}
+	
+    /**
+     * Main method
+     * 
+     * Writes a file and then checks if it has been modified by using multiple file attributes.
+     * This is useful because if a program wants to retrieve a known file, then an attacker could
+     * have tried to modify it after it was last written to. Therefore, checking the file's path
+     * and name is not enough to it is the same file. It's more secure to check and ensure that
+     * more file attributes, including date created, date modified, and file size are the same
+     * as they were when the file was last written to.
+     *
+     * @param args
+     */
+    public static void main(String[] args){       
+        try {
+        	// Write original file
+            Path grades = Paths.get("grades");
+        	Files.deleteIfExists(grades);
+            Files.writeString(grades, "Allaya,B+\nSrida,A-\nValerie,C\n");
+
+            // Store original file attributes
+            BasicFileAttributes orig = Files.readAttributes(grades, BasicFileAttributes.class);
+
+            // Replace original file with the modified one which has the same file size
+            Files.delete(grades);
+            Files.writeString(grades, "Allaya,B+\nSrida,A-\nValerie,A\n");
+
+            // Compare attributes of modified file
+            BasicFileAttributes comparison = Files.readAttributes(grades, BasicFileAttributes.class);
+
+            if (orig.size() != comparison.size())
+            	System.out.println("File's size has been modified");
+            else if (!Objects.equals(orig.creationTime(), comparison.creationTime()))
+            	System.out.println("File's creation time has been modified");
+            else if (!Objects.equals(orig.lastModifiedTime(), comparison.lastModifiedTime()))
+            	System.out.println("File's last updated time has been modified");
+
+            else
+            	System.out.println("File has not been modified");
+        } 
+        catch(Exception e) {
+        	System.out.println("Error occurred: " + e);
+        }
+    }
 }

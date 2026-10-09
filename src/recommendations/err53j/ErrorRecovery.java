@@ -14,7 +14,7 @@ public class ErrorRecovery {
     * does not stop the rest of the demonstration. The compliant example
     * catches the error and still performs its cleanup. 
     * 
-    * @param args 
+    * @param args command-line arguments (not used)
     * @throws InterruptedException if the main thread is interrupted 
     */
     public static void main(String[] args) throws InterruptedException {

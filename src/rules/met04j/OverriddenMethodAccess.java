@@ -9,7 +9,7 @@ package rules.met04j;
  * this example keeps the overridden method protected,
  * matching the accessibility of the parent method
  */
-public class OvrridenMethodAccess {
+public class OverriddenMethodAccess {
     /**
      * demonstrates the compliant implementation
      *

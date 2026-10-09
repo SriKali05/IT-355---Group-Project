@@ -1,4 +1,4 @@
-package rules.obj08;
+package rules.obj08j;
 
 /**
  * Demonstrates OBJ08-J by preventing a nested class from

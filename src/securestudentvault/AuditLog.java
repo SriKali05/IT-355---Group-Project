@@ -75,8 +75,9 @@ final class AuditLog {
 
     /**
      * Formats log messages while avoiding sensitive exception details.
+     *
+     * FIO13-J: prints only the exception CLASS, because messages/stack traces can leak data.
      */
-    /** FIO13-J: prints only the exception CLASS, because messages/stack traces can leak data. */
     private static final class CompactFormatter extends java.util.logging.Formatter {
         /**
          * Formats a log record into a single line.

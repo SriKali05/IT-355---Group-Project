@@ -30,7 +30,7 @@ public class ByteReading {
     * The compliant methods correctly detect the end of the stream, 
     * while the noncompliant character method does not. 
     * 
-    * @param args 
+    * @param args command-line arguments (not used)
     * @throws IOException if an input error occurs 
     */
     public static void main(String[] args) throws IOException {

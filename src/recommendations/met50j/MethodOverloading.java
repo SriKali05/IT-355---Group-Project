@@ -1,4 +1,4 @@
-package recommendations.met50;
+package recommendations.met50j;
 
 /**
  * working example for MET50-J
@@ -28,6 +28,7 @@ public class MethodOverloading {
     /**
      * finds a student using a student ID
      *
+     * @param arr the students to search
      * @param id student ID
      * @return student information
      */
@@ -42,12 +43,13 @@ public class MethodOverloading {
     /**
      * finds a student using the student's name
      *
+     * @param arr the students to search
      * @param name student name
      * @return student information
      */
     public static String getStudentByName(Student[] arr, String name) {
         for(int i = 0; i < arr.length; i++)
-        	if(arr[i].getName() == name)
+        	if(arr[i].getName().equals(name))
 				return arr[i].toString();
         
         return "Student could not be found";

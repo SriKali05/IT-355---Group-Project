@@ -30,3 +30,4 @@ public class MutableObjectReferences {
 		System.out.println(mySquareValues[5]);
 	}
 }
+

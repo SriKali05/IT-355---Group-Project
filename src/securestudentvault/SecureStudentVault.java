@@ -16,28 +16,42 @@ package securestudentvault;
  *   Srida  : ERR02-J  EXP02-J  IDS07-J  SER12-J  FIO14-J
  *   Bonus  : MET55-J (recommendation)
  *
- * Run with:  java SecureStudentVault.java      (JDK 17+; no external libraries)
- * The JDBC part uses an in-memory stub Connection so no database driver is needed.
+ * HOW TO RUN (JDK 17+)
+ *   Eclipse: Run As > Java Application. h2.jar is already on the build path.
+ *   Command line, from the repository root:
+ *     javac -cp h2.jar -d out src/securestudentvault/*.java
+ *     java -cp "out;h2.jar" securestudentvault.SecureStudentVault      (Windows)
+ *     java -cp "out:h2.jar" securestudentvault.SecureStudentVault      (macOS/Linux)
+ *   (The single-file form "java SecureStudentVault.java" does NOT work: the
+ *   program is split across many files in this package.)
+ *
+ * The SQL section uses a real in-memory H2 database (h2.jar). If h2.jar is not
+ * on the classpath, that section is skipped and the rest of the demo still runs.
  */
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
 import java.io.Reader;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /* =====================================================================================
@@ -56,12 +70,20 @@ public final class SecureStudentVault {
     static final Pattern NAME_PATTERN = Pattern.compile("[A-Za-z][A-Za-z '\\-]{0,49}");
     static final Pattern USER_PATTERN = Pattern.compile("[a-z][a-z0-9_]{2,19}");
 
+    // ERR02-J: if the demo fails before the audit log exists (for example while
+    // creating the work directory), the failure still goes through a logging
+    // API instead of being lost or printed with printStackTrace().
+    private static final Logger STARTUP_LOG = Logger.getLogger(SecureStudentVault.class.getName());
+
     // OBJ01-J: every instance field is private.
     private final StudentRegistry registry = new StudentRegistry();
     private File workDir;
     private AuditLog audit;
     private Session teacher;
     private Session student;
+    // OBJ11-J demo: where the finalizer attack hides a rescued Session.
+    // volatile because the garbage collector's finalizer thread writes it (VNA00-J).
+    private volatile Session rescuedSession;
 
     /** Starts the demonstration and exits with its resulting status.
          * @param args command-line arguments (unused)
@@ -104,10 +126,15 @@ public final class SecureStudentVault {
             // ERR08-J: only specific, expected exception types are caught (never NPE,
             // RuntimeException, Exception or Throwable).
             status = 1;
+            // ERR02-J: record the failure through a logging API, never printStackTrace().
+            // Before setup() finishes there is no audit log yet, so use the startup logger;
+            // otherwise the reason for the failure would be lost.
             if (audit != null) {
-                audit.error("Demo aborted", e);      // ERR02-J: logging API, not printStackTrace()
+                audit.error("Demo aborted", e);
+            } else {
+                STARTUP_LOG.log(Level.SEVERE, "Demo aborted before the audit log was available", e);
             }
-            System.out.println("Demo aborted: " + e.getClass().getSimpleName());
+            System.out.println("Demo aborted: " + e.getClass().getSimpleName() + ": " + e.getMessage());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             status = 1;
@@ -123,13 +150,17 @@ public final class SecureStudentVault {
          * @throws IOException if setup fails
      */
     private void setup() throws IOException {
-        banner("1. Setup  (FIO01-J, FIO02-J, ERR02-J)");
-        workDir = new File(System.getProperty("java.io.tmpdir"), "vault-" + System.nanoTime());
-        SecureFiles.createNewDirectory(workDir);                       // FIO02-J: mkdir() result checked
-        audit = new AuditLog(workDir.toPath().resolve("audit.log"));   // FIO01-J: private log file
+        banner("1. Setup  (FIO01-J, ERR02-J)");
+        // FIO01-J: the work directory is created WITH owner-only permissions in a
+        // single step (POSIX rwx------ or a Windows owner-only ACL), inside the
+        // shared temp folder, under an unpredictable name.
+        workDir = SecureFiles.createPrivateTempDirectory("vault-").toFile();
+        // FIO01-J: the audit log file is likewise created owner-only before any data is written.
+        // ERR02-J: AuditLog records events through java.util.logging.
+        audit = new AuditLog(workDir.toPath().resolve("audit.log"));
         audit.info(APP_NAME + " started");
-        out("Work directory created, owner-only. Audit log permissions: "
-                + SecureFiles.describe(workDir.toPath().resolve("audit.log")));
+        out("Work directory permissions: " + SecureFiles.describe(workDir.toPath()));
+        out("Audit log permissions:      " + SecureFiles.describe(workDir.toPath().resolve("audit.log")));
     }
 
     // ----------------------------------------------------- 2. authentication
@@ -177,7 +208,7 @@ public final class SecureStudentVault {
          * @throws SQLException if a database operation fails
      */
     private void demoDomainObjects() throws IOException, GeneralSecurityException, SQLException {
-        banner("3. Domain objects  (OBJ01/05/08/10/11/13-J, MET00-J, EXP02-J, MET55-J)");
+        banner("3. Domain objects  (OBJ05/08/11/13-J, MET00-J, EXP02-J, MET55-J)");
 
         Student ada = new Student("Ada Lovelace", 1001);
         ada.addGrade(95);
@@ -189,8 +220,8 @@ public final class SecureStudentVault {
         boolean dup = registry.register(new Student("Ada Clone", 1001));
         out("Duplicate uid registration accepted? " + dup);
 
-        // OBJ11-J: constructor failure leaves no usable object (Student is final).
-        expectRejected("uid out of range (MET00-J + OBJ11-J)", () -> new Student("Bad Uid", 5));
+        // MET00-J: constructors and methods validate their arguments.
+        expectRejected("uid out of range (MET00-J)", () -> new Student("Bad Uid", 5));
         expectRejected("illegal characters in name (MET00-J)", () -> new Student("Robert'); DROP", 1003));
         expectRejected("grade out of range (MET00-J)", () -> ada.addGrade(150));
 
@@ -219,6 +250,68 @@ public final class SecureStudentVault {
         // MET55-J: empty collection, never null.
         out("  snapshots() for an empty registry would be empty, not null: "
                 + new StudentRegistry().snapshots().isEmpty());
+
+        // OBJ11-J: when a constructor throws, the half-built object must stay unusable.
+        // Student is protected by being final: no subclass can override finalize().
+        out("  [ok]   OBJ11-J: Student is final, so no finalizer subclass can exist: "
+                + Modifier.isFinal(Student.class.getModifiers()));
+        // Session is not final, so actually attempt the finalizer attack on it.
+        // Its "initialized flag" makes the rescued object refuse every call.
+        Session stolen = stealHalfBuiltSession();
+        if (stolen == null) {
+            out("  [ok]   OBJ11-J: finalizer attack on Session recovered nothing");
+        } else {
+            try {
+                stolen.isTeacher();
+                out("  [FAIL] half-built Session recovered by a finalizer was usable!");
+            } catch (IllegalStateException e) {
+                out("  [ok]   OBJ11-J: finalizer recovered a half-built Session, but it refuses to work ("
+                        + e.getMessage() + ")");
+            }
+        }
+    }
+
+    /**
+     * OBJ11-J demonstration: plays the attacker and tries a "finalizer attack" on Session.
+     *
+     * 1. It creates an anonymous subclass of Session with a null role. Session's
+     *    constructor rejects that and throws IllegalArgumentException.
+     * 2. By then the object has already been allocated. It is never returned,
+     *    but it still exists until garbage collection.
+     * 3. Because Session is not final, the subclass can override finalize(). When
+     *    the garbage collector finalizes the rejected object, finalize() stores it
+     *    in a field, bringing the half-built object back.
+     *
+     * Session defends itself with the "initialized flag" technique (see Session),
+     * so the rescued object refuses every call. Student defends itself the other
+     * way OBJ11-J allows: it is final, so this kind of subclass cannot be written.
+     *
+     * @return the rescued, partially constructed Session, or null if the garbage
+     *         collector did not finalize it in time
+     */
+    @SuppressWarnings({"deprecation", "removal"}) // finalize() and runFinalization() ARE the attack
+    private Session stealHalfBuiltSession() {
+        try {
+            new Session("eve_user", null) {           // null role: the constructor throws
+                /**
+                 * Runs during garbage collection and stores the rejected,
+                 * half-built object in a field, making it reachable again.
+                 */
+                @Override
+                protected void finalize() {
+                    rescuedSession = this;            // resurrect the rejected object
+                }
+            };
+        } catch (IllegalArgumentException expected) {
+            // The constructor refused, exactly as intended; the object still exists in memory.
+        }
+        // Ask the JVM to collect garbage and run finalizers until the rejected object
+        // has been rescued, or give up after a bounded number of tries.
+        for (int attempt = 0; attempt < 50 && rescuedSession == null; attempt++) {
+            System.gc();
+            System.runFinalization();
+        }
+        return rescuedSession;
     }
 
     // ------------------------------------------------------------ 4. web form
@@ -298,16 +391,63 @@ public final class SecureStudentVault {
      */
     private void demoSql() throws SQLException, IOException, GeneralSecurityException {
         banner("6. SQL  (IDS00-J, MET00-J)");
-        List<String> trace = new ArrayList<>();
-        try (Connection conn = DemoDb.connection(trace)) {
+
+        Connection db;
+        try {
+            db = DemoDb.open(registry.snapshots());
+        } catch (SQLException e) {
+            // SQLState 08001 = no driver can handle the URL, i.e. h2.jar is not on the classpath.
+            if ("08001".equals(e.getSQLState())) {
+                out("  (skipped: H2 database driver not found - put h2.jar on the classpath)");
+                return;
+            }
+            throw e;
+        }
+
+        // ERR54-J: try-with-resources closes the connection (and drops the in-memory database).
+        try (Connection conn = db) {
             StudentDao dao = new StudentDao(conn);
-            out("  lookup 'Ada Lovelace' -> " + dao.findByName("Ada Lovelace"));
-            expectRejected("injection payload  x' OR '1'='1", () -> dao.findByName("x' OR '1'='1"));
-            expectRejected("over-long name (length check)", () -> dao.findByName("A".repeat(500)));
+            out("  lookup \"Ada Lovelace\"  -> " + dao.findByName("Ada Lovelace"));
+            out("  lookup \"Bob O'Neil\"    -> " + dao.findByName("Bob O'Neil")
+                    + "   (the apostrophe is just data)");
+
+            // This payload uses only letters, spaces and apostrophes, so it PASSES the
+            // MET00-J name validation. Only the parameterized query stops it.
+            String payload = "x' OR 'a' LIKE 'a";
+            out("  attack payload \"" + payload + "\" passes name validation: "
+                    + NAME_PATTERN.matcher(payload).matches());
+            out("    NONCOMPLIANT concatenated query (for comparison) -> "
+                    + lookupByConcatenation(conn, payload) + "   <- every student leaked");
+            out("    COMPLIANT StudentDao (PreparedStatement)         -> "
+                    + dao.findByName(payload) + "   <- no student has that literal name");
+
+            expectRejected("over-long name (MET00-J length check)", () -> dao.findByName("A".repeat(500)));
         }
-        for (String line : trace) {
-            out("    stub-db> " + line);
+    }
+
+    /**
+     * NONCOMPLIANT with IDS00-J. Exists ONLY to show what the vault's real
+     * lookup (StudentDao.findByName) prevents; nothing else in the program calls it.
+     *
+     * The name is pasted into the SQL text, so the quote characters in the
+     * payload end the string early and the rest of the payload becomes SQL:
+     *   WHERE name = 'x' OR 'a' LIKE 'a'
+     * which is true for every row.
+     *
+     * @param conn open database connection
+     * @param name the untrusted name
+     * @return the rows the query returned, as "uid:name"
+     * @throws SQLException if the query fails
+     */
+    private static List<String> lookupByConcatenation(Connection conn, String name) throws SQLException {
+        String sql = "SELECT uid, name FROM students WHERE name = '" + name + "'";
+        List<String> rows = new ArrayList<>();
+        try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                rows.add(rs.getInt("uid") + ":" + rs.getString("name"));
+            }
         }
+        return rows;
     }
 
     // ------------------------------------------------------ 7. files / reports
@@ -315,11 +455,21 @@ public final class SecureStudentVault {
          * @throws IOException if file operations fail
      */
     private void demoFilesAndReports() throws IOException {
-        banner("7. Files and reports  (FIO01/02/08/14-J, MET04-J, EXP00-J)");
+        banner("7. Files and reports  (FIO01/08/14-J, MET04-J)");
         Path report = workDir.toPath().resolve("report.csv");
         ReportFormatter formatter = new CsvReportFormatter();          // MET04-J: subclass keeps 'protected'
         SecureFiles.writePrivate(report, formatter.render(registry.snapshots()));   // FIO14-J inside
         out("report.csv permissions: " + SecureFiles.describe(report));
+
+        // FIO01-J: permissions are only applied when a file is CREATED. Writing into a
+        // file that already exists would keep its old (possibly open) permissions, so
+        // the vault refuses to reuse one instead of silently overwriting it.
+        try {
+            SecureFiles.writePrivate(report, "second export");
+            out("  [FAIL] an existing file was reused");
+        } catch (FileAlreadyExistsException e) {
+            out("  [ok]   refused to write into an existing file (its permissions are not ours to trust)");
+        }
 
         String content;
         try (Reader r = Files.newBufferedReader(report, StandardCharsets.UTF_8)) {
@@ -392,22 +542,34 @@ public final class SecureStudentVault {
          * @return zero if cleanup succeeded, otherwise one
      */
     private int cleanup() {
+        banner("11. Cleanup  (FIO02-J, FIO14-J)");
         int status = 0;
         if (audit != null) {
             audit.close();                                             // FIO14-J: flush + release handlers
         }
         if (workDir != null) {
-            File[] children = workDir.listFiles();                     // FIO02-J / EXP00-J: may be null
+            // FIO02-J: java.io.File reports failure through return values, not exceptions,
+            // so every result is checked. listFiles() returns null (EXP00-J) if the
+            // directory cannot be read; delete() returns false if a file could not be removed.
+            int removed = 0;
+            File[] children = workDir.listFiles();
             if (children == null) {
+                out("  could not list " + workDir.getName());
                 status = 1;
             } else {
                 for (File f : children) {
-                    if (!f.delete()) {                                 // FIO02-J: delete() result checked
+                    if (f.delete()) {
+                        removed++;
+                    } else {
+                        out("  could not delete " + f.getName());
                         status = 1;
                     }
                 }
             }
-            if (!workDir.delete()) {
+            if (workDir.delete()) {
+                out("  removed " + removed + " files and the work directory; every delete() result was checked");
+            } else {
+                out("  could not delete the work directory " + workDir.getName());
                 status = 1;
             }
         }

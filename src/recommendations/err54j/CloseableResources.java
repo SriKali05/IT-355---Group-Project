@@ -21,16 +21,16 @@ public class CloseableResources {
     public static void main(String[] args) {
     	Scanner s = new Scanner(System.in);
     	System.out.print("Enter input file to copy: ");
-    	String inFileName = s.next();
-    	String outFileName = "copy-" + inFileName;
+    	String inFileName = s.nextLine().trim();
     	s.close();
     	
-        Path input = Path.of(inFileName);
-        Path output = Path.of(outFileName);
-
         try {
+            Path input = Path.of(inFileName);
+        	Path filename = input.getFileName();
+        	Path output = input.resolveSibling("copy-" + filename);
+        	
             copyFile(input, output);
-            System.out.println("File copied successfully to " + outFileName);
+            System.out.println("File copied successfully to " + output);
         }
         catch (IOException e) {
             System.out.println("File operation failed: " + e.getMessage());

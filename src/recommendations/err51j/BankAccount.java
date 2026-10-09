@@ -21,7 +21,7 @@ public class BankAccount {
      * Withdraws money when sufficient funds are available.
      *
      * @param amount amount of money to withdraw
-     * @throws Err51j if the withdrawal exceeds the balance
+     * @throws BankException if the withdrawal exceeds the balance
      */
     public void withdraw(double amount) throws BankException {
         if (amount > balance) {

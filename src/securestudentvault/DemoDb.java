@@ -1,115 +1,68 @@
 /*
  * Package: securestudentvault
  * File: DemoDb.java
- * Rules covered: N/A
+ * Rules covered: supports the IDS00-J demonstration
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
 package securestudentvault;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 /**
- * Stand-in for a JDBC driver using dynamic proxies, so the code demo runs without an external database
- * Only to be used in a static context, cannot be instantiated as an object
+ * Creates the vault's demo database: a real, in-memory H2 database holding
+ * one row per registered student.
+ *
+ * A real SQL engine is used (instead of a fake JDBC driver) so the IDS00-J
+ * demonstration is genuine: an injection payload actually changes the result
+ * of a concatenated query, and is actually treated as plain data by a
+ * PreparedStatement.
+ *
+ * Requires h2.jar on the classpath (it is in the repository root and on the
+ * Eclipse build path). The database exists only in memory and disappears
+ * when its connection is closed.
+ *
+ * Only to be used in a static context, cannot be instantiated as an object.
  */
-public class DemoDb {
+final class DemoDb {
 
-    /**
-     * Private default constructor to ensure that the class cannot be instantiated as an object
-     */
-    private DemoDb(){
-
+    /** Private constructor: this is a utility class. */
+    private DemoDb() {
     }
 
     /**
-     * Returns a JDBC Connection object given a trace
-     * 
-     * @param trace List<String> 
-     * @return Connection
+     * Opens a new in-memory database and loads the given students into a
+     * {@code students(uid, name)} table.
+     *
+     * @param students the students to store
+     * @return an open connection; the caller must close it (ERR54-J: use try-with-resources)
+     * @throws SQLException if the H2 driver is missing or the table cannot be created
      */
-    public static Connection connection(List<String> trace) {
-        return proxy(Connection.class, (p, m, a) -> {
-            switch (m.getName()) {
-                case "prepareStatement":
-                    trace.add("prepare: " + a[0]);
-                    return statement(trace);
-                case "close":
-                    return null;
-                default:
-                    throw new UnsupportedOperationException(m.getName());
+    static Connection open(List<Student> students) throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:h2:mem:vault");
+        try {
+            try (Statement st = conn.createStatement()) {
+                st.execute("CREATE TABLE students (uid INT PRIMARY KEY, name VARCHAR(50) NOT NULL)");
             }
-        });
-    }
-
-    /**
-     * Returns a JDBC PreparedStatement object given a trace
-     * 
-     * @param trace List<String> 
-     * @return PreparedStatement
-     */
-    private static PreparedStatement statement(List<String> trace) {
-        final String[] bound = new String[1];
-        return proxy(PreparedStatement.class, (p, m, a) -> {
-            switch (m.getName()) {
-                case "setString":
-                    bound[0] = (String) a[1];
-                    trace.add("bind ?" + a[0] + " = '" + a[1] + "'  (sent as data, never parsed as SQL)");
-                    return null;
-                case "executeQuery":
-                    return resultSet(bound[0]);
-                case "close":
-                    return null;
-                default:
-                    throw new UnsupportedOperationException(m.getName());
+            // Even our own seed data goes through placeholders (IDS00-J):
+            // names such as "Bob O'Neil" contain a quote character.
+            try (PreparedStatement insert =
+                         conn.prepareStatement("INSERT INTO students (uid, name) VALUES (?, ?)")) {
+                for (Student s : students) {
+                    insert.setInt(1, s.getUid());
+                    insert.setString(2, s.getName().value());
+                    insert.executeUpdate();
+                }
             }
-        });
-    }
-
-    /**
-     * Returns a JDBC ResultSet object with given a name
-     * Uses a one-element served flag, for the same lambda reason as above
-     * 
-     * @param name String
-     * @return ResultSet that always holds exactly one row
-     */
-    private static ResultSet resultSet(String name){
-        final boolean[] served = new boolean[1];
-        return proxy(ResultSet.class, (p, m, a) -> {
-            switch (m.getName()) {
-                case "next":
-                    if (served[0]) {
-                        return Boolean.FALSE;
-                    }
-                    served[0] = true;
-                    return Boolean.TRUE;
-                case "getInt":
-                    return 1001;
-                case "getString":
-                    return name;
-                case "close":
-                    return null;
-                default:
-                    throw new UnsupportedOperationException(m.getName());
-            }
-        });
-    }
-
-    /**
-     * Private helper helper method that wraps Proxy.newProxyInstance()
-     * It creates an object implementing 'type' that sends every call to 'handler', then casts it to T
-     * 
-     * @param type The Class<T> type to implement
-     * @param handler The InvocationHandler to send method invocations to
-     * @return 
-     */
-    @SuppressWarnings("unchecked")
-    private static <T> T proxy(Class<T> type, InvocationHandler handler){
-        return (T) Proxy.newProxyInstance(DemoDb.class.getClassLoader(), new Class<?>[] {type}, handler);
+            return conn;
+        } catch (SQLException e) {
+            conn.close(); // do not leak the connection if setup fails part-way
+            throw e;
+        }
     }
 }

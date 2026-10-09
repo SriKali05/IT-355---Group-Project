@@ -23,7 +23,7 @@ public class GradeFormHandler {
     }
 
     /**
-     * Static method that takes in a user HTTP session, a student registry object, and a form inpput object as Map<String, String>
+     * Static method that takes in a user HTTP session, a student registry object, and a form input object as {@code Map<String, String>}
      * Performs thorough checks and validation on the user form, and attempts to add the grade to the registry
      * This method is to be called statically, which is the purpose of this class
      * The user's role comes from the SERVER-SIDE session, and a hidden "role" field is ignored

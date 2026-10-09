@@ -1,88 +1,122 @@
 package securestudentvault;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.FileSystems;
+import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.AclEntry;
+import java.nio.file.attribute.AclEntryFlag;
+import java.nio.file.attribute.AclEntryPermission;
+import java.nio.file.attribute.AclEntryType;
+import java.nio.file.attribute.AclFileAttributeView;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.util.Set;
+import java.nio.file.attribute.UserPrincipal;
+import java.util.EnumSet;
+import java.util.List;
 
 /* =====================================================================================
- *  FILE UTILITIES   (FIO01-J, FIO02-J, FIO08-J, FIO14-J)
+ *  FILE UTILITIES   (FIO01-J, FIO08-J, FIO14-J)
  * ===================================================================================== */
+/**
+ * Creates, writes and reads the vault's private files.
+ *
+ * FIO01-J (create files with appropriate access permissions):
+ * every file and directory is created WITH owner-only permissions in the same
+ * call that creates it. Permissions are never loosened-then-tightened, so there
+ * is no moment when another user could open the file.
+ *
+ * Two permission models are supported, chosen by asking the file system
+ * that will actually hold the file:
+ *   - POSIX (Linux, macOS): rw------- for files, rwx------ for directories
+ *   - ACL   (Windows NTFS): a single "allow" entry for the current user, with
+ *                           no entries inherited from the parent folder
+ * If neither is available, creation is refused rather than silently creating
+ * an unprotected file.
+ */
 final class SecureFiles {
-    private static final Set<PosixFilePermission> OWNER_RW = PosixFilePermissions.fromString("rw-------");
 
-    /** Prevents instantiation of this utility class.
-     */
+    /** Prevents instantiation of this utility class. */
     private SecureFiles() { }
 
-    /** FIO02-J: File.mkdir() reports failure by returning false, so the result must be checked. */
-    /** Creates a new directory and restricts access to its owner.
-         * @param dir directory to create
-         * @throws IOException if creation or permission changes fail
+    /**
+     * Creates a new, uniquely named directory under the system temp folder that
+     * only the current user can access.
+     *
+     * FIO01-J: the owner-only permissions are passed to createTempDirectory, so
+     * the directory never exists without them. createTempDirectory also picks
+     * an unpredictable name and fails instead of reusing an existing directory,
+     * which matters because the temp folder is shared with other users.
+     *
+     * @param prefix the start of the directory name
+     * @return the new directory
+     * @throws IOException if the directory cannot be created with restricted permissions
      */
-    static void createNewDirectory(File dir) throws IOException {
-        if (!dir.mkdir()) {
-            throw new IOException("could not create directory");
-        }
-        restrictToOwner(dir);
+    static Path createPrivateTempDirectory(String prefix) throws IOException {
+        Path tempRoot = Path.of(System.getProperty("java.io.tmpdir"));
+        return Files.createTempDirectory(tempRoot, prefix, ownerOnly(tempRoot, true));
     }
 
-    /** FIO01-J: permissions are supplied AT CREATION TIME (atomic), not changed afterwards. */
-    /** Creates a file with owner-only permissions when supported.
-         * @param path file path
-         * @throws IOException if file creation or permission changes fail
+    /**
+     * Creates a NEW file that only the current user can access.
+     *
+     * FIO01-J: the permissions are applied atomically at creation time.
+     * If the file already exists, Files.createFile throws
+     * FileAlreadyExistsException and the caller must not write to it: an
+     * existing file keeps whatever permissions it was created with, which
+     * may let other users read it.
+     *
+     * @param path the file to create
+     * @throws java.nio.file.FileAlreadyExistsException if the file already exists
+     * @throws IOException if the file cannot be created with restricted permissions
      */
     static void createPrivateFile(Path path) throws IOException {
-        try {
-            Files.createFile(path, PosixFilePermissions.asFileAttribute(OWNER_RW));
-        } catch (FileAlreadyExistsException e) {
-            // Reusing an existing file is fine for append-style logs.
-        } catch (UnsupportedOperationException e) {
-            // Non-POSIX file system (e.g. Windows): best-effort fallback, every result checked (FIO02-J).
-            File f = path.toFile();
-            if (!f.createNewFile() && !f.isFile()) {
-                throw new IOException("could not create file");
-            }
-            restrictToOwner(f);
-        }
+        Path parent = path.toAbsolutePath().getParent();
+        Files.createFile(path, ownerOnly(parent, false));
     }
 
-    /** Writes binary data to a privately created file.
-         * @param path destination file
-         * @param data bytes to write
-         * @throws IOException if writing fails
+    /**
+     * Writes binary data to a newly created private file.
+     *
+     * @param path destination file (must not already exist)
+     * @param data bytes to write
+     * @throws IOException if the file exists or cannot be written
      */
     static void writePrivate(Path path, byte[] data) throws IOException {
         createPrivateFile(path);
         Files.write(path, data);
     }
 
-    /** Writes text as UTF-8 to a privately created file.
-         * @param path destination file
-         * @param text text to write
-         * @throws IOException if writing fails
+    /**
+     * Writes UTF-8 text to a newly created private file.
+     *
+     * @param path destination file (must not already exist)
+     * @param text text to write
+     * @throws IOException if the file exists or cannot be written
      */
     static void writePrivate(Path path, String text) throws IOException {
         createPrivateFile(path);
-        // FIO14-J: the writer is flushed and closed on every path, including exceptions.
+        // FIO14-J: try-with-resources flushes and closes the writer on every
+        // path, including exceptions, so no buffered text can be lost.
         try (Writer w = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
             w.write(text);
         }
     }
 
-    /** FIO08-J: keep read()'s result as an int and test for -1 BEFORE narrowing to char. */
-    /** Reads all characters from a reader until end of stream.
-         * @param reader source reader
-         * @return complete text
-         * @throws IOException if reading fails
+    /**
+     * Reads all characters from a reader until end of stream.
+     *
+     * FIO08-J: read() returns an int that is -1 at the end of the stream.
+     * The int is compared with -1 BEFORE it is narrowed to a char; a char can
+     * never hold -1, so narrowing first would make the loop never end.
+     *
+     * @param reader source reader
+     * @return complete text
+     * @throws IOException if reading fails
      */
     static String readAll(Reader reader) throws IOException {
         StringBuilder sb = new StringBuilder();
@@ -93,35 +127,93 @@ final class SecureFiles {
         return sb.toString();
     }
 
-    /** Returns POSIX permission text, or n/a when unavailable.
-         * @param p path to inspect
-         * @return permission description
+    /**
+     * Describes who can access a file, for display in the demo output.
+     * On POSIX systems this is the permission string (e.g. rw-------).
+     * On ACL systems it reports whether the owner is the only user listed.
+     *
+     * @param p path to inspect
+     * @return a short description of the file's access permissions
      */
     static String describe(Path p) {
         try {
-            return PosixFilePermissions.toString(Files.getPosixFilePermissions(p));
-        } catch (UnsupportedOperationException | IOException e) {
-            return "n/a";                                              // display only
+            if (Files.getFileStore(p).supportsFileAttributeView(PosixFileAttributeView.class)) {
+                return PosixFilePermissions.toString(Files.getPosixFilePermissions(p));
+            }
+            AclFileAttributeView view = Files.getFileAttributeView(p, AclFileAttributeView.class);
+            if (view != null) {
+                List<AclEntry> acl = view.getAcl();
+                UserPrincipal owner = view.getOwner();
+                boolean ownerOnly = !acl.isEmpty()
+                        && acl.stream().allMatch(e -> e.principal().equals(owner));
+                return ownerOnly
+                        ? "ACL: owner only (" + acl.size() + " entry)"
+                        : "ACL: " + acl.size() + " entries, NOT owner-only";
+            }
+        } catch (IOException e) {
+            // display only: fall through to "n/a"
         }
+        return "n/a";
     }
 
-    /** Restricts access permissions to the file owner where supported.
-         * @param f file or directory to protect
-         * @throws IOException if a required permission change fails
+    /**
+     * Builds the "owner only" file attribute for the file system that holds
+     * {@code dir}.
+     *
+     * @param dir the directory the new file or directory will be created in
+     * @param forDirectory true when creating a directory
+     * @return a file attribute to pass to Files.createFile / createTempDirectory
+     * @throws IOException if the file system supports neither POSIX permissions nor ACLs
      */
-    private static void restrictToOwner(File f) throws IOException {
-        if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix")) {
-            // POSIX (Linux/macOS): set exact owner-only permissions in one call.
-            String perms = f.isDirectory() ? "rwx------" : "rw-------";
-            Files.setPosixFilePermissions(f.toPath(), PosixFilePermissions.fromString(perms));
-            return;
+    private static FileAttribute<?> ownerOnly(Path dir, boolean forDirectory) throws IOException {
+        FileStore store = Files.getFileStore(dir);
+
+        if (store.supportsFileAttributeView(PosixFileAttributeView.class)) {
+            // Directories need the execute bit so the owner can open them.
+            return PosixFilePermissions.asFileAttribute(
+                    PosixFilePermissions.fromString(forDirectory ? "rwx------" : "rw-------"));
         }
-        // Non-POSIX (Windows): java.io.File cannot remove read/execute permission there, so
-        // setReadable(false)/setExecutable(false) always return false. Only the owner-grant calls are
-        // meaningful; the file keeps the ACL inherited from its parent (the per-user temp directory).
-        boolean ok = f.setReadable(true, true) & f.setWritable(true, true);
-        if (!ok) {
-            throw new IOException("could not restrict permissions");
+
+        if (store.supportsFileAttributeView(AclFileAttributeView.class)) {
+            UserPrincipal currentUser = dir.getFileSystem().getUserPrincipalLookupService()
+                    .lookupPrincipalByName(System.getProperty("user.name"));
+
+            // One ALLOW entry granting the current user full control. Because
+            // this ACL is supplied explicitly, nothing is inherited from the
+            // parent folder, so no other user or group appears in it.
+            AclEntry.Builder entry = AclEntry.newBuilder()
+                    .setType(AclEntryType.ALLOW)
+                    .setPrincipal(currentUser)
+                    .setPermissions(EnumSet.allOf(AclEntryPermission.class));
+            if (forDirectory) {
+                // Files that other code creates inside the directory (such as
+                // the audit log's lock file) inherit this owner-only entry.
+                entry.setFlags(AclEntryFlag.FILE_INHERIT, AclEntryFlag.DIRECTORY_INHERIT);
+            }
+            List<AclEntry> acl = List.of(entry.build());
+
+            return new FileAttribute<List<AclEntry>>() {
+                /**
+                 * Names the attribute as the Windows ACL view expects.
+                 * @return "acl:acl"
+                 */
+                @Override
+                public String name() {
+                    return "acl:acl";
+                }
+
+                /**
+                 * Returns the owner-only ACL to apply when the file is created.
+                 * @return the single-entry ACL
+                 */
+                @Override
+                public List<AclEntry> value() {
+                    return acl;
+                }
+            };
         }
+
+        // Fail closed: never create a sensitive file we cannot protect.
+        throw new IOException("file system cannot restrict access to the owner; refusing to create file");
     }
 }

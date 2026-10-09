@@ -16,6 +16,18 @@ import java.util.regex.Pattern;
  * Runtime.exec() method. 
  */
 public class ExecData {
+	
+    /**
+     * Runs the demonstration.
+     *
+     * @param args not used
+     * @throws Exception if a command cannot be run
+     */
+    public static void main(String[] args) throws Exception {
+        noncompliant(UNTRUSTED_DIR);
+        compliantSanitize(UNTRUSTED_DIR);
+        compliantNoExec(UNTRUSTED_DIR);
+    }
  
     /** Simulates untrusted input: the attacker adds a second command using &amp;. */
     static final String UNTRUSTED_DIR = "dummy & echo INJECTED";
@@ -77,18 +89,6 @@ public class ExecData {
                 System.out.println(name);
             }
         }
-    }
- 
-    /**
-     * Runs the demonstration.
-     *
-     * @param args not used
-     * @throws Exception if a command cannot be run
-     */
-    public static void main(String[] args) throws Exception {
-        noncompliant(UNTRUSTED_DIR);
-        compliantSanitize(UNTRUSTED_DIR);
-        compliantNoExec(UNTRUSTED_DIR);
     }
 }
  

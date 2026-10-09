@@ -1,51 +1,28 @@
 package recommendations.obj51j;
 
 /**
- * working example for OBJ51-J
- *
- * OBJ51-J: Minimize the accessibility of classes and their members
- *
- * this example keeps an internal class and its data restricted
- * because they do not need to be publicly accessible
+ * class that does not need to be public
  */
-public class BankAccount {
-	
-    /**
-     * demonstrates limited accessibility of the class
-     * and its members
-     *
-     * @param args command-line arguments
-     */
-    public static void main(String[] args) {
-        Account account = new Account(100.00);
+class BankAccount {
 
-        account.displayBalance();
+    /**
+     * account balance is kept private
+     */
+    private double balance;
+
+    /**
+     * creates an account with a starting balance
+     *
+     * @param balance starting account balance
+     */
+    BankAccount(double balance) {
+        this.balance = balance;
     }
 
     /**
-     * internal class that does not need to be public
+     * displays the account balance
      */
-    static class Account {
-
-        /**
-         * account balance is kept private
-         */
-        private double balance;
-
-        /**
-         * creates an account with a starting balance
-         *
-         * @param balance starting account balance
-         */
-        Account(double balance) {
-            this.balance = balance;
-        }
-
-        /**
-         * displays the account balance
-         */
-        void displayBalance() {
-            System.out.println("Balance: " + balance);
-        }
+    void displayBalance() {
+        System.out.println("Balance: " + balance);
     }
 }

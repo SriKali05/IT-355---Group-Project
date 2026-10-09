@@ -1,4 +1,4 @@
-package rules.obj08;
+package rules.obj08j;
 
 /**
  * Demonstrates OBJ08-J by preventing a nested class from
@@ -18,7 +18,9 @@ public class Employee {
     }
     
     /**
-     * 
+     * Processes this employee's salary. The work is done by a private
+     * method that uses the private nested class, so outside code never
+     * gets access to SalaryDetails or to the salary field.
      */
     public void processSalary() {
     	this.processSalaryInternally();

@@ -21,9 +21,9 @@ public class Student implements Serializable{
 	
 	/**
 	 * Student constructor, which calls the Name constructor
-	 * @param uid
-	 * @param student's first name
-	 * @param student's last lname
+	 * @param uid the student's university id
+	 * @param fname the student's first name
+	 * @param lname the student's last name
 	 */
 	public Student(int uid, String fname, String lname) {
 		this.uid = uid;
@@ -67,8 +67,8 @@ public class Student implements Serializable{
 		
 		/**
 		 * Name constructor
-		 * @param fname
-		 * @param lname
+		 * @param fname the first name
+		 * @param lname the last name
 		 */
 		protected Name(String fname, String lname) {
 			this.fname = fname;

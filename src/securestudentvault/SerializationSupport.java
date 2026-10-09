@@ -8,6 +8,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+/**
+ * Converts objects to and from serialized bytes for the vault.
+ *
+ * SER12-J: every deserialization goes through SafeObjectInputStream, so only
+ * allowlisted classes can be read back.
+ */
 final class SerializationSupport {
     /** Prevents instantiation of this utility class.
      */

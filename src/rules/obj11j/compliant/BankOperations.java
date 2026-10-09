@@ -6,8 +6,6 @@ package rules.obj11j.compliant;
  * A final class cannot be extended, so an attacker cannot write a subclass
  * that overrides finalize() to capture a partially constructed object.
  * The constructor can keep its simple throw-on-failure structure.
- *
- * BankOperations
  */
 final class BankOperations {
  

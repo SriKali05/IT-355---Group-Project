@@ -40,8 +40,11 @@ public class FileInspector {
 
     /**
      * Gets size of file in bytes by calling wc using exec()
-     * 
+     *
+     * @param fileName name of a file inside the base directory (untrusted input)
      * @return long representing the file size in bytes
+     * @throws IllegalArgumentException if the file name is null or not a safe file name
+     * @throws IOException if the command cannot be run, fails, or prints unexpected output
      */
     long sizeOf(String fileName) throws IOException {
         

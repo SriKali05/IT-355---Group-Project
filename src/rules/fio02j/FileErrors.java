@@ -1,6 +1,6 @@
 /*
  * Package: rules.fio02j
- * File: MainClass.java
+ * File: FileErrors.java
  * Author: Karsten Tisdale
  * For IT 355 group project
  */
@@ -27,7 +27,7 @@ public class FileErrors {
 	 * information about the method's outcome, and catch any exceptions
 	 * that may be thrown if the method fails.
 	 * 
-	 * @param args
+	 * @param args command-line arguments (not used)
 	 */
 	public static void main(String[] args) {
 		Scanner s = new Scanner(System.in);

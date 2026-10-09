@@ -1,4 +1,4 @@
-package recommendations.met50;
+package recommendations.met50j;
 
 /**
  * working example for MET50-J
@@ -14,8 +14,8 @@ public class Student {
 	
 	/**
 	 * constructor
-	 * @param name
-	 * @param id
+	 * @param id the student's ID number
+	 * @param name the student's name
 	 */
 	public Student(int id, String name) {
 		this.name = name;

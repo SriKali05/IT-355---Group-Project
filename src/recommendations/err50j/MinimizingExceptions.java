@@ -16,7 +16,7 @@ public class MinimizingExceptions {
     * invalid input. The noncompliant method throws an exception for each
     * invalid input, while the compliant method uses a normal condition check. 
     * 
-    *  @param args 
+    *  @param args command-line arguments (not used)
     * */
     public static void main(String[] args) {
         String[] inputs = { "123", "abc", "45x", "" };

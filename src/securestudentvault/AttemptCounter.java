@@ -1,8 +1,9 @@
 package securestudentvault;
 /**
  * Tracks failed login attempts and raises an alarm after a threshold is reached.
+ *
+ * VNA00-J: shared primitives are accessed under a lock (count) or are volatile (alarm flag).
  */
-/** VNA00-J: shared primitives are accessed under a lock (count) or are volatile (alarm flag). */
 final class AttemptCounter {
     private static final int ALARM_THRESHOLD = 3;
     private int count;                          // guarded by "this"

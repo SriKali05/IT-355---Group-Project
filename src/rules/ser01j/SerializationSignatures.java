@@ -23,30 +23,30 @@ public class SerializationSignatures {
 	 * The security aspect here is entirely in how the Student class implements
 	 * the serialization process internally.
 	 * 
-	 * @param args
+	 * @param args command-line arguments (not used)
 	 */
 	public static void main(String[] args) {
 		Student s1 = new Student("John", 987312490);
 		Student s2 = null;
 		System.out.println("Student has name " + s1.getName() + " and UID " + s1.getUid());
 		
-		try {
-			FileOutputStream fout = new FileOutputStream("Student");
-		    ObjectOutputStream oout = new ObjectOutputStream(fout);
+		try (FileOutputStream fout = new FileOutputStream("Student"); ObjectOutputStream oout = new ObjectOutputStream(fout)){
 		    oout.writeObject(s1);
-		    oout.close();
 		    System.out.println("Student has been serialized.");
-
-			FileInputStream fin = new FileInputStream("Student");
-		    ObjectInputStream oin = new ObjectInputStream(fin);
-		    s2 = (Student) oin.readObject();
-		    oin.close();
-		    System.out.println("Student has been deserialized.");
 		}
 		catch(Exception e) {
-			System.out.println("Error occurred in serialization or deserialization.");
+			System.out.println("Error occurred in serialization: " + e);
+			System.exit(1);
 		}
-		
-		System.out.println("Student has name " + s2.getName() + " and UID " + s2.getUid());
+		    
+		try (FileInputStream fin = new FileInputStream("Student"); ObjectInputStream oin = new ObjectInputStream(fin)) {
+		    s2 = (Student) oin.readObject();
+		    System.out.println("Student has been deserialized.");
+			System.out.println("Student has name " + s2.getName() + " and UID " + s2.getUid());
+		}
+		catch(Exception e) {
+			System.out.println("Error occurred in deserialization: " + e);
+			System.exit(1);
+		}
 	}
 }

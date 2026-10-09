@@ -43,11 +43,30 @@ final class Student implements Serializable {
             return value;
         }
 
-        // SER01-J: exact signatures (private, void, ObjectOutputStream/ObjectInputStream, throws IOException...)
+        /**
+         * Writes this name to a serialization stream.
+         *
+         * SER01-J: exact signature (private, void, one ObjectOutputStream
+         * parameter, throws IOException), or serialization would ignore it.
+         *
+         * @param out the stream being written
+         * @throws IOException if writing fails
+         */
         private void writeObject(ObjectOutputStream out) throws IOException {
             out.defaultWriteObject();
         }
 
+        /**
+         * Reads this name from a serialization stream and re-validates it,
+         * because deserialization bypasses the constructor's checks.
+         *
+         * SER01-J: exact signature (private, void, one ObjectInputStream
+         * parameter, throws IOException and ClassNotFoundException).
+         *
+         * @param in the stream being read
+         * @throws IOException if reading fails or the name is invalid
+         * @throws ClassNotFoundException if a class in the stream cannot be found
+         */
         private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
             in.defaultReadObject();
             if (value == null || !SecureStudentVault.NAME_PATTERN.matcher(value).matches()) {
@@ -164,7 +183,15 @@ final class Student implements Serializable {
         return c;
     }
 
-    // SER01-J: exact, conventional signatures.
+    /**
+     * Writes this student to a serialization stream.
+     *
+     * SER01-J: exact, conventional signature (private, void, one
+     * ObjectOutputStream parameter, throws IOException).
+     *
+     * @param out the stream being written
+     * @throws IOException if writing fails
+     */
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
     }

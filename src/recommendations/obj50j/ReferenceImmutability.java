@@ -19,7 +19,7 @@ public class ReferenceImmutability {
 
         /*
          * The reference cannot point to another object because it is final.
-         * The coordinates also cannot be modified because OBJ50J
+         * The coordinates also cannot be modified because Point
          * stores them in final fields and provides no setter methods.
          */
     }

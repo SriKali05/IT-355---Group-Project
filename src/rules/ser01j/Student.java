@@ -20,9 +20,9 @@ public class Student implements Serializable {
 	
 	/**
 	 * Student constructor
-	 * 
-	 * @param name
-	 * @param uid
+	 *
+	 * @param name the student's name
+	 * @param uid the student's university id (kept between 0 and 999999999)
 	 */
 	public Student(String name, int uid) {
 		this.name = name;
@@ -56,9 +56,9 @@ public class Student implements Serializable {
 	 * It must be a private void, which throws IOException and ClassNotFoundException,
 	 * correctly spell readObject, and has exactly one parameter of type ObjectInputStream.
 	 * 
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
+	 * @param in the stream the Student is being read from
+	 * @throws IOException if the stream cannot be read
+	 * @throws ClassNotFoundException if a class in the stream cannot be found
 	 */
 	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException{
 		in.defaultReadObject();

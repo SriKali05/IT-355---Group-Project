@@ -16,9 +16,11 @@ import java.sql.Statement;
  * 
  * The main method tests both login methods using the same malicious input to show the difference between the unsafe and safe approaches.
  * 
- * To run this program input the following command in the terminal:
- * 1) javac -cp h2.jar -d /tmp/out src/rules/IDS00J.java
- * 2) java -cp /tmp/out:h2.jar src.rules.IDS00J
+ * To run from the command line, starting in the repository root (where h2.jar is):
+ *   1) javac -cp h2.jar -d out src/rules/ids00j/SqlInjection.java
+ *   2) java -cp "out;h2.jar" rules.ids00j.SqlInjection      (Windows)
+ *      java -cp "out:h2.jar" rules.ids00j.SqlInjection      (macOS/Linux)
+ *
  * 
  * 
  */
@@ -35,7 +37,7 @@ public class SqlInjection {
      * Tests the compliant login using the same SQL injection. This time, the input is treated as normal text, so the login fails.
      * 
      * Tests the compliant login with the correct username and password to show that normal login still works.
-     * @param args
+     * @param args command-line arguments (not used)
      * @throws Exception if there is a database error
      */
     public static void main(String[] args) throws Exception {

@@ -9,6 +9,19 @@ package rules.ids14j;
  * before using it
  */
 public class HiddenFields {
+	
+    /**
+     * demonstrates validation of hidden form field data
+     *
+     * @param args command-line arguments
+     */
+    public static void main(String[] args) {
+        String validRole = "student";
+        String modifiedRole = "administrator";
+
+        processForm(validRole);
+        processForm(modifiedRole);
+    }
 
     /**
      * processes a hidden form field after validating its value
@@ -25,18 +38,5 @@ public class HiddenFields {
         }
 
         System.out.println("Accepted role: " + role);
-    }
-
-    /**
-     * demonstrates validation of hidden form field data
-     *
-     * @param args command-line arguments
-     */
-    public static void main(String[] args) {
-        String validRole = "student";
-        String modifiedRole = "administrator";
-
-        processForm(validRole);
-        processForm(modifiedRole);
     }
 }
