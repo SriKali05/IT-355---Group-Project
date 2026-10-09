@@ -8,7 +8,7 @@ package securestudentvault;
  * everything is audit-logged. Each rule/recommendation is tagged in a comment
  * where it is applied, e.g.  "// MET00-J".
  *
- * RULE MAP (search for the tag to find the code)
+ * RULE MAP
  *   Serena : MET00-J  MET03-J  FIO01-J  OBJ08-J  FIO13-J
  *   Valerie: OBJ05-J  ERR08-J  IDS14-J  OBJ01-J  MET04-J
  *   Karsten: OBJ13-J  FIO02-J  SER01-J  SER05-J  VNA00-J
