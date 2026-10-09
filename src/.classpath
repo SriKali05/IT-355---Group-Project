@@ -6,5 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path=""/>
+	<classpathentry kind="lib" path="../h2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

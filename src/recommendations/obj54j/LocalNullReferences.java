@@ -24,8 +24,8 @@ public class LocalNullReferences {
      */
     public static void main(String[] args) {
         int[] examScores = {71, 84, 90, 65, 78};
-        System.out.println("Noncompliant curved average: " + compliant(examScores));
-        System.out.println("Compliant curved average:    " + noncompliant(examScores));
+        System.out.println("Noncompliant curved average: " + noncompliant(examScores));
+        System.out.println("Compliant curved average:    " + compliant(examScores));
     }
     
     /**

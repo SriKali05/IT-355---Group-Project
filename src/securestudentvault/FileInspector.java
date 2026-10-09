@@ -39,7 +39,8 @@ public class FileInspector {
     }
 
     /**
-     * Gets size of file in bytes by calling wc using exec()
+     * Gets size of file in bytes by running an operating-system command with exec():
+     * "where.exe /t" on Windows, or "wc -c" on Linux and macOS
      *
      * @param fileName name of a file inside the base directory (untrusted input)
      * @return long representing the file size in bytes
@@ -50,15 +51,14 @@ public class FileInspector {
         
         // IDS07-J: Sanitize untrusted data passed to the Runtime.exec() method
         // Before .exec() is called, check the file name against the valid format (matches throws exceptions as needed)
-        Check.matches(fileName, SAFE_FILE, "file name");               
-        Path target = baseDir.resolve(fileName);
+        Check.matches(fileName, SAFE_FILE, "file name");
 
         // Argument array: no shell is involved, so no metacharacter can start a second command
-        Process p = Runtime.getRuntime().exec(new String[] {"wc", "-c", target.toString()});
+        Process p = Runtime.getRuntime().exec(sizeCommand(fileName));
         String output;
 
 
-        // Try to read output of wc command
+        // Try to read output of the command
         try (Reader r = new InputStreamReader(p.getInputStream(), StandardCharsets.UTF_8)) {
             output = SecureFiles.readAll(r);
         }
@@ -71,13 +71,14 @@ public class FileInspector {
                 throw new IOException("inspection command failed");
             }
         }
-        // catch block for being inerrupted while waiting
+        // catch block for being interrupted while waiting
         catch (InterruptedException e){
             Thread.currentThread().interrupt();
             throw new IOException("interrupted while waiting for command");
         }
 
-        // Parse and return the file size in bytes as a long from the output of wc
+        // Parse and return the file size in bytes as a long. Both commands print
+        // the size first: wc prints "71 path", where /t prints "71   date time  path"
         try{
             return Long.parseLong(output.trim().split("\\s+")[0]);
         }
@@ -85,5 +86,28 @@ public class FileInspector {
         catch (NumberFormatException e) {
             throw new IOException("unexpected command output");
         }
+    }
+
+    /**
+     * Builds the command that prints a file's size, as an argument array.
+     *
+     * Each array element is passed to the program as one separate argument and
+     * no shell (cmd.exe or /bin/sh) is started, so characters such as ; &amp; | in
+     * the file name could never start a second command (IDS07-J). The file name
+     * has also already been validated against SAFE_FILE, which allows no spaces,
+     * path separators, wildcards (* ?) or colons.
+     *
+     * @param fileName the already-validated file name
+     * @return the command and its arguments
+     */
+    private String[] sizeCommand(String fileName) {
+        if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+            // Windows has no "wc". where.exe is built into Windows; "/t" makes it
+            // print each match's size and date. Its pattern argument has the form
+            // "folder:filename", which limits the search to that one folder.
+            return new String[] {"where.exe", "/t", baseDir.toAbsolutePath() + ":" + fileName};
+        }
+        // Linux and macOS: "wc -c" prints the number of bytes in the file
+        return new String[] {"wc", "-c", baseDir.resolve(fileName).toString()};
     }
 }

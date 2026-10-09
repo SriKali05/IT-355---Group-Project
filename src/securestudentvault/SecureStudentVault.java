@@ -14,7 +14,6 @@ package securestudentvault;
  *   Karsten: OBJ13-J  FIO02-J  SER01-J  SER05-J  VNA00-J
  *   Allaya : IDS00-J  OBJ11-J  FIO08-J  EXP00-J  OBJ10-J
  *   Srida  : ERR02-J  EXP02-J  IDS07-J  SER12-J  FIO14-J
- *   Bonus  : MET55-J (recommendation)
  *
  * HOW TO RUN (JDK 17+)
  *   Eclipse: Run As > Java Application. h2.jar is already on the build path.
@@ -208,7 +207,7 @@ public final class SecureStudentVault {
          * @throws SQLException if a database operation fails
      */
     private void demoDomainObjects() throws IOException, GeneralSecurityException, SQLException {
-        banner("3. Domain objects  (OBJ05/08/11/13-J, MET00-J, EXP02-J, MET55-J)");
+        banner("3. Domain objects  (OBJ05-J, OBJ08-J, OBJ11-J, OBJ13-J, MET00-J, EXP02-J, MET55-J)");
 
         Student ada = new Student("Ada Lovelace", 1001);
         ada.addGrade(95);
@@ -455,7 +454,7 @@ public final class SecureStudentVault {
          * @throws IOException if file operations fail
      */
     private void demoFilesAndReports() throws IOException {
-        banner("7. Files and reports  (FIO01/08/14-J, MET04-J)");
+        banner("7. Files and reports  (FIO01-J, FIO08-J, FIO14-J, MET04-J)");
         Path report = workDir.toPath().resolve("report.csv");
         ReportFormatter formatter = new CsvReportFormatter();          // MET04-J: subclass keeps 'protected'
         SecureFiles.writePrivate(report, formatter.render(registry.snapshots()));   // FIO14-J inside
@@ -485,7 +484,8 @@ public final class SecureStudentVault {
         banner("8. Runtime.exec()  (IDS07-J)");
         FileInspector inspector = new FileInspector(workDir.toPath());
         try {
-            out("  size of report.csv via 'wc -c' = " + inspector.sizeOf("report.csv") + " bytes");
+            out("  size of report.csv via an external command (where.exe on Windows, wc -c elsewhere) = "
+                    + inspector.sizeOf("report.csv") + " bytes");
         } catch (IOException e) {
             audit.error("Inspector unavailable", e);
             out("  (skipped: external tool unavailable on this OS)");
